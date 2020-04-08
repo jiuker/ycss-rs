@@ -1,0 +1,19 @@
+{
+  "debug": true,
+  "hType": "vue",
+  "common": ["./res/regexp/common/vue.reg"],
+  "single": ["./res/regexp/single/vue.reg"],
+  "outUnit": "px",
+  "zoom": 1,
+  "needZoomUnit": "px|rem|upx",
+  "reg": ["class=\"([^\"]+)\""],
+  "watchDir": ["/home/jiuker/goworkspace/src/dmallRedisSync/center/res/vue-element-admin/src/views/sync","/home/jiuker/goworkspace/src/dmallRedisSync/center/res/vue-element-admin/src/views/login"],
+  "oldCssReg": "/\\* Automatic generation Start \\*/([^/]+)/\\*",
+  "keyNeedZoom": [],
+  "static": {
+    "red": "#ff0000",
+    "red-1": "#ff1100",
+    "height": 12
+  },
+  "outPath": "@FILEDIR/@FILENAME.@FILETYPE"
+}
