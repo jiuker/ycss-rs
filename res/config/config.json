@@ -1,5 +1,5 @@
 {
-  "debug": true,
+  "debug": false,
   "hType": "vue",
   "common": ["./res/regexp/common/vue.reg"],
   "single": ["./res/regexp/single/vue.reg"],
@@ -7,7 +7,7 @@
   "zoom": 1,
   "needZoomUnit": "px|rem|upx",
   "reg": ["class=\"([^\"]+)\""],
-  "watchDir": ["/home/jiuker/goworkspace/src/dmallRedisSync/center/res/vue-element-admin/src/views/sync","/home/jiuker/goworkspace/src/dmallRedisSync/center/res/vue-element-admin/src/views/login"],
+  "watchDir": ["./res"],
   "oldCssReg": "/\\* Automatic generation Start \\*/([^/]+)/\\*",
   "keyNeedZoom": [],
   "static": {
