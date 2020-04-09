@@ -10,3 +10,7 @@ edition = "2018"
 serde = "*"
 serde_derive = "*"
 serde_json = "*"
+regex="*"
+select = "*"
+[dependencies.lazy_static]
+features = ["spin_no_std"]

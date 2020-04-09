@@ -1,15 +1,15 @@
 <template>
-    <div class="bc-ff1123"></div>
+    <div class="bc-ff1123 test">1231231</div>
     <div class="bc-000-112-231 br-nr bp-c bs-c bs-10-15"></div>
     <div class="b-1-001 br-1-123 o-1-000121 c-fff ls-12 lh-20"></div>
     <div class="ta-c ta-r ta-l"></div>
     <div class="fs-20 fw-100"></div>
-    <div class="m-1010 p-0505 h-10 w-20 h10 w10"></div>
+    <div class="m-1010 p-0505 h-10 w-22 h10 w10"></div>
     <div class="maxh-23 maxw-10 minh-10 minw-22"></div>
-    <div class="p-f p-a p-r d-b t-2 b-1 l-3 r-40 va-m zi-205"></div>
+    <div class="p-f p-a p-r d-b t-2 b-1 l-3 r-11 va-m zi-205"></div>
     <div class="mt-10 ml-10 mr-10 mb-10"></div>
     <div class="pt-10 pl-10 pr-10 pb-10 br-4"></div>
-    <div class="d-f fd-r ai-c jc-c ai-c fw-nw f-14 test1"></div>
+    <div class="d-f fd-r ai-c jc-c ai-c fw-nw f-11 test1"></div>
 </template>
 <style>
     .test{
