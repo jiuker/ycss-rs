@@ -14,4 +14,6 @@ pub trait Repl{
     */
     fn new(path:String)->Self;
     fn get_file_body(&self)->String;
+    fn get_class(&self)->Vec<String>;
+    fn get_new_class(&self,cls:Vec<String>)->String;
 }

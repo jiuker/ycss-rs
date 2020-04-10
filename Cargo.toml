@@ -11,6 +11,6 @@ serde = "*"
 serde_derive = "*"
 serde_json = "*"
 regex="*"
-select = "*"
+quick-xml = "*"
 [dependencies.lazy_static]
 features = ["spin_no_std"]

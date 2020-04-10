@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 use std::time::{SystemTime, Duration};
-use std::io::{Error, ErrorKind};
 use std::thread::{sleep, spawn};
 use lazy_static::lazy_static;
 const WATCH_FILE_MAX:i32 = 1000i32;
@@ -30,7 +29,7 @@ pub fn watch_dir(dir:Vec<String>,file_type:String,clear:bool,cb:fn(path:String))
             watch_map.insert(path.clone(), std::fs::File::open(path.clone())?.metadata()?.modified()?);
         }
         if (watch_map.len() as i32) >= WATCH_FILE_MAX {
-            return Err(Box::try_from(Error::new(ErrorKind::Other, "over flow max watch file numbers!"))?);
+            return Err(Box::try_from( "over flow max watch file numbers!").unwrap());
         }
     }
     // 只有第一次设置监听才有用
