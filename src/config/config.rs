@@ -33,6 +33,7 @@ pub struct YConfig{
    pub needZoomUnit:String,
    pub zoom:f32,
    pub outUnit:String,
+   pub outPath:String,
 }
 impl YConfig{
     pub fn is_debug(&self)->bool{
@@ -49,7 +50,8 @@ impl YConfig{
             reg: vec![],
             needZoomUnit: "".to_string(),
             zoom: 0.0,
-            outUnit: "".to_string()
+            outUnit: "".to_string(),
+            outPath: "".to_string()
         }
     }
 }

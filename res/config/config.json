@@ -15,5 +15,5 @@
     "red-1": "#ff1100",
     "height": 12
   },
-  "outPath": "@FILEDIR/@FILENAME.@FILETYPE"
+  "outPath": "@FileDir@FileName.css"
 }

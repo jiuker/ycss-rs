@@ -1,5 +1,5 @@
 <template>
-    <div class="f-c-1-ff0002 fs-1 bc-ff1115 d-f">1231231</div>
+    <div class="f-c-2-ff0002 fs-1 bc-ff1115 d-f">1231231</div>
     <div class="bc-000-112-231 br-nr bp-c bs-c bs-10-15"></div>
     <div class="b-3-001 br-1-123 o-1-000121 c-fff ls-12 lh-20"></div>
     <div class="ta-c ta-r ta-l"></div>
@@ -11,7 +11,6 @@
     <div class="pt-10 pl-10 pr-10 pb-12 br-4"></div>
     <div class="d-f fd-r ai-c jc-c ai-c fw-nw f-50 test1"></div>
 </template>
-
 <style>
     .test{
         width: 10px;
