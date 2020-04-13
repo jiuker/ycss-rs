@@ -61,31 +61,41 @@ impl Repl for VueRepl {
             for (value,reg) in common_c.clone(){
                 if reg.is_match(&cls_.as_str()){
                     let class_match = reg.captures(cls_.as_str()).unwrap();
-                    let mut value_c = value.clone();
+                    let mut value_c:String = value.clone();
                     for match_index in 0..class_match.len() {
                         if !value_c.contains("$"){
                             break;
                         }
-                        value_c = value_c.replace(format!("${}",match_index).as_str(),&class_match[match_index])
+                        value_c = value_c.replace(format!("${}",match_index).as_str(),&class_match[match_index]);
                     }
-                    // get the common replace value:bb-1-fff
+                    // get the common replace value:bb-1-fff \n c-1-fff
                     // println!("{:?}",value_c);
-                    for (sv,sr) in singal_c.clone(){
-                        let mut sv_c = sv;
-                        let value_c1 = &value_c;
-                        if sr.is_match(value_c1.as_str()){
-                            let sr_match = sr.captures(value_c1.as_str()).unwrap();
-                            for mr_index in 0..sr_match.len() {
-                                if !sv_c.contains("$"){
-                                    break;
+                    let mut css_content = String::from("");
+                    for value_c_split in value_c.split("\n"){
+                        let value_c_split_trim = value_c_split.trim().to_string();
+                        for (sv,sr) in singal_c.clone(){
+                            let mut sv_c = sv;
+                            let value_c1 = &value_c_split_trim;
+                            if sr.is_match(value_c1.as_str()){
+                                let sr_match = sr.captures(value_c1.as_str()).unwrap();
+                                for mr_index in 0..sr_match.len() {
+                                    if !sv_c.contains("$"){
+                                        break;
+                                    }
+                                    sv_c = sv_c.replace(format!("${}",mr_index).as_str(),&sr_match[mr_index])
                                 }
-                                sv_c = sv_c.replace(format!("${}",mr_index).as_str(),&sr_match[mr_index])
+                                // println!("{:?}",sv_c);
+                                // set as css
+                                if !css_content.is_empty(){
+                                    sv_c = sv_c.add("\r\n");
+                                }
+                                css_content = css_content.add(sv_c.trim());
                             }
-                            // println!("{:?}",sv_c);
-                            // set as css
-                            rsl = rsl.add(format!(".{}{}{}{}", value_c.as_str(), "{", sv_c.as_str(),"}\r\n").as_ref());
                         }
                     }
+                    let rsl_string = format!(".{}{}{}{}", cls_.as_str(), "{", css_content.as_str(),"}\r\n");
+                    println!("{:?}",rsl_string.as_str());
+                    rsl = rsl.add(rsl_string.as_str());
                     break
                 }
             }
