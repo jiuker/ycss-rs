@@ -23,7 +23,19 @@ fn file_change(path:String){
         let rep:VueRepl = Repl::new(path.clone());
         let cls = rep.get_class();
         println!("cls is {:?}",cls);
-        let new_css = rep.get_new_class(cls);
-        println!("new_css is {}",new_css);
+        let new_css = rep.get_new_css(cls);
+        // println!("new_css is {}",new_css);
+        let old_css = rep.get_old_css();
+        // println!("old_css is {}",old_css);
+        if old_css==""{
+            println!("not find the auto css contain!forget?[{}]",path);
+            return;
+        }
+        if !rep.is_same(new_css.clone(),old_css.clone()){
+            rep.write(new_css.clone(),old_css.clone());
+            println!("replace success!");
+        }else{
+            println!("is the same!do noting!");
+        }
     }
 }

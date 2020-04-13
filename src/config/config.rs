@@ -30,6 +30,9 @@ pub struct YConfig{
    pub watchDir:Vec<String>,
    pub oldCssReg:String,
    pub reg:Vec<String>,
+   pub needZoomUnit:String,
+   pub zoom:f32,
+   pub outUnit:String,
 }
 impl YConfig{
     pub fn is_debug(&self)->bool{
@@ -43,7 +46,10 @@ impl YConfig{
             single: vec![],
             watchDir: vec![],
             oldCssReg: "".to_string(),
-            reg: vec![]
+            reg: vec![],
+            needZoomUnit: "".to_string(),
+            zoom: 0.0,
+            outUnit: "".to_string()
         }
     }
 }
