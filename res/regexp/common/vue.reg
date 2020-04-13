@@ -229,8 +229,9 @@
 <css key="^td-n$">
    td-n
 </css>
-<css key="^f-c$">
+<css key="^f-c-(\d{1,2})-([A-Z|a-z|0-9]{3,6})$">
     d-f
     jc-c
     ai-c
+    b-$1-$2
 </css>
