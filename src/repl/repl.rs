@@ -1,6 +1,4 @@
 use std::error;
-use std::fmt;
-use serde::export::Formatter;
 
 pub trait Repl{
     /*

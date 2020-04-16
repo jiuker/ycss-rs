@@ -166,7 +166,6 @@ impl Repl for VueRepl {
     }
 
     fn write(&self,new_css:String,old_css:String) {
-        let yconf_c = YCONF.lock().unwrap();
         // 如果不是自己的文件需要追加地址
         let out_path = self.out_path.clone();
         if !out_path.eq(&self.path) {
