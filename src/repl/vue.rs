@@ -6,6 +6,7 @@ use std::ops::Add;
 use std::collections::VecDeque;
 use std::fs::{File, OpenOptions};
 use std::path::Path;
+use std::error;
 pub struct VueRepl{
     path:String,
     file_body:String,
@@ -26,13 +27,13 @@ impl Repl for VueRepl {
     fn get_file_body(&self) -> String {
         self.file_body.clone()
     }
-    fn get_class(&self)->Vec<String>{
-        let yconf_c = YCONF.lock().unwrap();
+    fn get_class(&self)->Result<Vec<String>,Box<dyn error::Error>>{
+        let yconf_c = YCONF.lock()?;
         let file_body = (*self).get_file_body();
         let mut rsl_str = String::from("");
         let mut rsl: Vec<String> = vec![];
         for reg in &yconf_c.reg{
-            let reg_reg = Regex::new(reg).unwrap();
+            let reg_reg = Regex::new(reg)?;
             let rsl_ = reg_reg.find_iter(file_body.as_str()).map(|x| x.as_str().to_string()).collect::<Vec<_>>();
             for rsl__ in rsl_{
                 let mut index = 0;
@@ -53,12 +54,12 @@ impl Repl for VueRepl {
         for key in cls_map.iter(){
             rsl.push(key.to_owned());
         }
-        return rsl;
+        Ok(rsl)
     }
 
-    fn get_new_css(&self, cls:Vec<String>) -> String {
-        let common_c = COMMON.lock().unwrap();
-        let singal_c = SINGAL.lock().unwrap();
+    fn get_new_css(&self, cls:Vec<String>) -> Result<String,Box<dyn error::Error>> {
+        let common_c = COMMON.lock()?;
+        let singal_c = SINGAL.lock()?;
         let mut rsl = String::new() ;
         for cls_ in cls{
             for (value,reg) in common_c.clone(){
@@ -120,7 +121,7 @@ impl Repl for VueRepl {
             // 地址不一样
             rsl__ = rsl__.add(format!(" {}", self.path).as_ref());
         }
-        rsl__
+        Ok(rsl__)
     }
     fn get_old_css(&self) ->String{
         let yconf_c = YCONF.lock().unwrap();

@@ -20,9 +20,21 @@ fn file_change(path:String){
         // 不是配置文件变动
         println!("get {} changed!",path);
         let rep:VueRepl = Repl::new(path.clone());
-        let cls = rep.get_class();
+        let cls = match rep.get_class(){
+            Ok(d)=>d,
+            Err(e)=>{
+                println!("get class err is {}",e);
+                return
+            }
+        };
         println!("cls is {:?}",cls);
-        let new_css = rep.get_new_css(cls);
+        let new_css = match rep.get_new_css(cls){
+            Ok(d)=>d,
+            Err(e)=>{
+                println!("get new css err is {}",e);
+                return;
+            }
+        };
         // println!("new_css is {}",new_css);
         let old_css = rep.get_old_css();
         // println!("old_css is {}",old_css);
