@@ -36,15 +36,11 @@ pub fn watch_dir(dir:Vec<String>,file_type:String,clear:bool,cb:fn(path:String))
     if !clear{
         spawn(move || {
             loop {
-                {
-                    // 出了作用域需要解锁,不然这里就是一直持有锁
-                    let mut watch_map_c = WATCH_MAP.lock().unwrap();
-                    for (path, time) in watch_map_c.clone() {
-                        let now_time = std::fs::File::open(path.clone()).unwrap().metadata().unwrap().modified().unwrap();
-                        if !time.eq(&now_time){
-                            watch_map_c.insert(path.clone(),now_time);
-                            cb(path.clone());
-                        }
+                match watch(cb) {
+                    Ok(())=>(),
+                    Err(e)=>{
+                        println!("watch err is {}" ,e);
+                        break;
                     }
                 }
                 sleep(Duration::from_millis(500));
@@ -52,6 +48,18 @@ pub fn watch_dir(dir:Vec<String>,file_type:String,clear:bool,cb:fn(path:String))
         });
     }
     return Ok(());
+}
+fn watch(cb:fn(path:String))->Result<(),Box<dyn error::Error>>{
+    // 出了作用域需要解锁,不然这里就是一直持有锁
+    let mut watch_map_c = WATCH_MAP.lock()?;
+    for (path, time) in watch_map_c.clone() {
+        let now_time = std::fs::File::open(path.clone())?.metadata()?.modified()?;
+        if !time.eq(&now_time){
+            watch_map_c.insert(path.clone(),now_time);
+            cb(path.clone());
+        }
+    }
+    Ok(())
 }
 fn read_all_paths(dir:String,file_type:String)->Result<Vec<String>,Box<dyn error::Error>>{
     let dirs = std::fs::read_dir(dir)?;
