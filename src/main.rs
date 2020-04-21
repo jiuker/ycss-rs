@@ -24,7 +24,7 @@ fn file_change(path:String){
     }else{
         // 不是配置文件变动
         println!("get {} changed!",path);
-        let mut rep:VueRepl = Repl::new(path.clone());
+        let mut rep:VueRepl = Repl::new(path.to_owned());
         match rep.init() {
             Ok(_)=>{},
             Err(e)=>{

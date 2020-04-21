@@ -16,7 +16,7 @@ use regex::Regex;
 pub fn set_config_path(path:String,cb:fn(path:String))->Result<(),Box<dyn error::Error>> {
     let path_c = path.clone().add("/config.json");
     thread::spawn(move||{
-        cb(path_c.to_owned());
+        cb(path_c.clone());
     });
     watch::watch::watch_dir(vec![path.clone()], "json".to_owned(),false, cb)?;
     Ok(())
@@ -95,7 +95,7 @@ pub fn read_reg_file(paths:Vec<String>)->Result<HashMap<String,Regex>, Box<dyn e
     let mut common_keys:Vec<String> = vec![];
     let mut common_values:Vec<String> = vec![];
     for p in paths{
-        let mut reader = Reader::from_file(p.clone())?;
+        let mut reader = Reader::from_file(&p)?;
         let mut buf = Vec::new();
         loop{
             match reader.read_event(&mut buf) {
