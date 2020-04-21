@@ -102,8 +102,18 @@ pub fn read_reg_file(paths:Vec<String>)->Result<HashMap<String,Regex>, Box<dyn e
                 Ok(Event::Start(ref e)) => {
                     match e.name() {
                         b"css"=>{
-                            let attr = e.attributes().map(|x| x.unwrap().value).collect::<Vec<_>>();
-                            for x in attr {
+                            let attr = e.attributes().map(|x| match x {
+                                Ok(d)=>{
+                                    return Some(d.value)
+                                },
+                                Err(_)=>{
+                                    return None
+                                }
+                            }).collect::<Option<Vec<_>>>();
+                            for x in match attr {
+                                Some(d)=>d,
+                                None=>{vec![]}
+                            } {
                                 common_keys.push(String::from_utf8(x.to_vec())?);
                             }
                         },
