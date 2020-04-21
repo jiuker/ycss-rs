@@ -6,7 +6,12 @@ use ycss::repl::repl::Repl;
 use ycss::repl::vue::VueRepl;
 
 fn main() {
-    config::set_config_path("./res/config".to_owned(),file_change);
+    match config::set_config_path("./res/config".to_owned(),file_change){
+        Ok(_)=>(),
+        Err(e)=>{
+            println!("some err is {}",e)
+        }
+    };
     sleep(Duration::from_secs(24*60*60))
 }
 fn file_change(path:String){

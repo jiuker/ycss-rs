@@ -29,7 +29,7 @@ pub fn watch_dir(dir:Vec<String>,file_type:String,clear:bool,cb:fn(path:String))
             watch_map.insert(path.clone(), std::fs::File::open(path.clone())?.metadata()?.modified()?);
         }
         if (watch_map.len() as i32) >= WATCH_FILE_MAX {
-            return Err(Box::try_from( "over flow max watch file numbers!").unwrap());
+            return Err(Box::try_from( "over flow max watch file numbers!")?);
         }
     }
     // 只有第一次设置监听才有用
@@ -62,13 +62,23 @@ fn read_all_paths(dir:String,file_type:String)->Result<Vec<String>,Box<dyn error
         let x_u = x?;
         let x_meta = x_u.metadata()?;
         if x_meta.is_dir(){
-            for path in  read_all_paths(x_u.path().to_str().unwrap().to_owned(),file_type.clone())?{
+            for path in  read_all_paths(match x_u.path().to_str(){
+                Some(d)=>d,
+                None=> {
+                    return Err(Box::try_from("没有找到该目录")?);
+                }
+            }.to_owned(),file_type.clone())?{
                 paths.push(path);
             }
         }else{
-            let x_path = x_u.path();
-            if reg.is_match(x_path.to_str().unwrap()){
-                paths.push(x_path.to_str().unwrap().to_owned());
+            let x_path = match x_u.path().to_str() {
+                Some(d)=>d,
+                None=>{
+                    return Err(Box::try_from("没有找到路径")?)
+                }
+            }.to_string();
+            if reg.is_match(x_path.as_str()){
+                paths.push(x_path);
             }
         }
     }

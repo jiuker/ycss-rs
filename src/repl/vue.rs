@@ -133,7 +133,7 @@ impl Repl for VueRepl {
         let rsl_ = reg_need_zoom.replace_all(rsl.as_str(), |caps:&Captures| -> String {
             let base = match caps[1].parse::<f32>(){
                 Ok(d)=>d,
-                Err(e)=>{
+                Err(_)=>{
                     return caps[0].to_string();
                 }
             };
@@ -229,7 +229,7 @@ impl Repl for VueRepl {
 pub fn same_str() ->Result<String,Box<dyn error::Error>>{
      let rsl = match "qazwsxedcrfvtgbnhyujmki,ol.;p'[]1234567890-".parse(){
          Ok(d)=>d,
-         Err(e)=>{
+         Err(_)=>{
              return Err(Box::try_from("字符串解析异常")?);
          }
      };

@@ -13,13 +13,13 @@ use std::convert::TryFrom;
 use std::collections::HashMap;
 use regex::Regex;
 
-pub fn set_config_path(path:String,cb:fn(path:String)) {
+pub fn set_config_path(path:String,cb:fn(path:String))->Result<(),Box<dyn error::Error>> {
     let path_c = path.clone().add("/config.json");
     thread::spawn(move||{
         cb(path_c.to_owned());
     });
-    watch::watch::watch_dir(vec![path.clone()], "json".to_owned(),false, cb).unwrap();
-    println!("watch unlock");
+    watch::watch::watch_dir(vec![path.clone()], "json".to_owned(),false, cb)?;
+    Ok(())
 }
 #[derive(Debug,serde_derive::Serialize,serde_derive::Deserialize, Clone)]
 pub struct YConfig{
@@ -95,7 +95,7 @@ pub fn read_reg_file(paths:Vec<String>)->Result<HashMap<String,Regex>, Box<dyn e
     let mut common_keys:Vec<String> = vec![];
     let mut common_values:Vec<String> = vec![];
     for p in paths{
-        let mut reader = Reader::from_file(p.clone()).unwrap();
+        let mut reader = Reader::from_file(p.clone())?;
         let mut buf = Vec::new();
         loop{
             match reader.read_event(&mut buf) {
@@ -104,14 +104,14 @@ pub fn read_reg_file(paths:Vec<String>)->Result<HashMap<String,Regex>, Box<dyn e
                         b"css"=>{
                             let attr = e.attributes().map(|x| x.unwrap().value).collect::<Vec<_>>();
                             for x in attr {
-                                common_keys.push(String::from_utf8(x.to_vec()).unwrap());
+                                common_keys.push(String::from_utf8(x.to_vec())?);
                             }
                         },
                         _=>{}
                     }
                 },
                 Ok(Event::Text(t))=> {
-                    let _text = t.unescape_and_decode(&reader).unwrap();
+                    let _text = t.unescape_and_decode(&reader)?;
                     if _text.trim()!=""{
                         common_values.push(_text.trim().to_string());
                     }
@@ -128,12 +128,12 @@ pub fn read_reg_file(paths:Vec<String>)->Result<HashMap<String,Regex>, Box<dyn e
     println!("keys   is {:?}",common_keys);
     println!("values is {:?}",common_values);
     if common_keys.len() != common_values.len(){
-        return Err(Box::try_from("通用配置出现异常!").unwrap());
+        return Err(Box::try_from("通用配置出现异常!")?);
     }
     let mut common_reg_map:HashMap<String,Regex> = HashMap::new();
     let mut index = 0;
     while  index<common_values.len(){
-        common_reg_map.insert(common_values[index].clone(),Regex::new(common_keys[index].as_str()).unwrap());
+        common_reg_map.insert(common_values[index].clone(),Regex::new(common_keys[index].as_str())?);
         index = index + 1;
     }
     println!("reg_map is{:?}",common_reg_map);
