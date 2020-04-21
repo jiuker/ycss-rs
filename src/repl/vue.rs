@@ -79,7 +79,7 @@ impl Repl for VueRepl {
                             return Err(Box::try_from("没有匹配数据!")?)
                         }
                     };
-                    let mut value_c:String = value.clone();
+                    let mut value_c:String = value;
                     for match_index in 0..class_match.len() {
                         if !value_c.contains("$"){
                             break;
@@ -128,7 +128,7 @@ impl Repl for VueRepl {
         let yconf_c = YCONF.lock()?;
         let out_unit = &yconf_c.outUnit;
         let zoom_size = &yconf_c.zoom;
-        let need_zoom_uint_str = format!("([0-9|\\.]{})[ |	]{}({}){}","{1,10}","{0,3}",yconf_c.clone().needZoomUnit,"{1,5}");
+        let need_zoom_uint_str = format!("([0-9|\\.]{})[ |	]{}({}){}","{1,10}","{0,3}",yconf_c.needZoomUnit,"{1,5}");
         let reg_need_zoom = Regex::new(need_zoom_uint_str.as_str())?;
         let rsl_ = reg_need_zoom.replace_all(rsl.as_str(), |caps:&Captures| -> String {
             let base = match caps[1].parse::<f32>(){
