@@ -7,6 +7,7 @@ use std::collections::VecDeque;
 use std::fs::{File, OpenOptions};
 use std::path::Path;
 use std::error;
+use std::convert::TryFrom;
 pub struct VueRepl{
     path:String,
     file_body:String,
@@ -21,7 +22,10 @@ impl Repl for VueRepl {
         VueRepl {
             path:path.clone(),
             file_body,
-            out_path: parse_out_path(path.clone(),yconf_c.clone().outPath)
+            out_path: match  parse_out_path(path.clone(),yconf_c.clone().outPath){
+                Some(d)=>d,
+                None => "@FileDir@FileName@FileType".to_string()
+            }
         }
     }
     fn get_file_body(&self) -> String {
@@ -64,7 +68,12 @@ impl Repl for VueRepl {
         for cls_ in cls{
             for (value,reg) in common_c.clone(){
                 if reg.is_match(&cls_.as_str()){
-                    let class_match = reg.captures(cls_.as_str()).unwrap();
+                    let class_match = match reg.captures(cls_.as_str()){
+                        Some(d)=>d,
+                        None=>{
+                            return Err(Box::try_from("没有匹配数据!")?)
+                        }
+                    };
                     let mut value_c:String = value.clone();
                     for match_index in 0..class_match.len() {
                         if !value_c.contains("$"){
@@ -81,7 +90,12 @@ impl Repl for VueRepl {
                             let mut sv_c = sv;
                             let value_c1 = &value_c_split_trim;
                             if sr.is_match(value_c1.as_str()){
-                                let sr_match = sr.captures(value_c1.as_str()).unwrap();
+                                let sr_match =match sr.captures(value_c1.as_str()){
+                                    Some(d)=>d,
+                                    None=>{
+                                        return Err(Box::try_from("没有匹配数据!")?)
+                                    }
+                                };
                                 for mr_index in 0..sr_match.len() {
                                     if !sv_c.contains("$"){
                                         break;
@@ -106,52 +120,70 @@ impl Repl for VueRepl {
         }
         rsl = format!("/* Automatic generation Start */\r\n{}\r\n/*",rsl);
         // 缩放
-        let yconf_c = YCONF.lock().unwrap();
+        let yconf_c = YCONF.lock()?;
         let out_unit = &yconf_c.outUnit;
         let zoom_size = &yconf_c.zoom;
         let need_zoom_uint_str = format!("([0-9|\\.]{})[ |	]{}({}){}","{1,10}","{0,3}",yconf_c.clone().needZoomUnit,"{1,5}");
-        let reg_need_zoom = Regex::new(need_zoom_uint_str.as_str()).unwrap();
-        let rsl_ = reg_need_zoom.replace_all(rsl.as_str(), |caps:&Captures| {
-            let data = zoom_size*&caps[1].parse::<f32>().unwrap();
+        let reg_need_zoom = Regex::new(need_zoom_uint_str.as_str())?;
+        let rsl_ = reg_need_zoom.replace_all(rsl.as_str(), |caps:&Captures| -> String {
+            let base = match caps[1].parse::<f32>(){
+                Ok(d)=>d,
+                Err(e)=>{
+                    return caps[0].to_string();
+                }
+            };
+            let data = zoom_size*base;
             format!("{}{}",data,out_unit)
         });
         // 如果不是自己的文件需要追加地址
-        let mut rsl__:String = rsl_.parse().unwrap();
+        let mut rsl__:String = rsl_.parse()?;
         if !self.out_path.eq(&self.path) {
             // 地址不一样
             rsl__ = rsl__.add(format!(" {}", self.path).as_ref());
         }
         Ok(rsl__)
     }
-    fn get_old_css(&self) ->String{
-        let yconf_c = YCONF.lock().unwrap();
+    fn get_old_css(&self) ->Result<String,Box<dyn error::Error>>{
+        let yconf_c = YCONF.lock()?;
         let file_body = self.get_file_body();
         let mut rsl = String::from("");
         // 路径是一致的
         if self.out_path.eq(&self.path){
-            let reg_reg = Regex::new(&yconf_c.oldCssReg.as_str()).unwrap();
-            rsl = rsl.add(reg_reg.find(file_body.as_str()).unwrap().as_str());
+            let reg_reg = Regex::new(&yconf_c.oldCssReg.as_str())?;
+            let rsl_ = match  reg_reg.find(file_body.as_str()) {
+                Some(d)=>d,
+                None =>{
+                    return Err(Box::try_from("没有匹配到数据")?);
+                }
+            };
+            rsl = rsl.add(rsl_.as_str());
         }else{
             // 路径不一致
             let out_path = &self.out_path;
             let mut file_body = "".to_string();
             println!("old file is {}",out_path);
-            OpenOptions::new().read(true).write(true).open(out_path).unwrap().read_to_string(&mut file_body).unwrap();
+            OpenOptions::new().read(true).write(true).open(out_path)?.read_to_string(&mut file_body)?;
             let mut old_css_reg_c = yconf_c.oldCssReg.clone() as String;
             old_css_reg_c = old_css_reg_c.add(format!(" {}", self.path).as_ref());
             println!("old css reg is {}",old_css_reg_c);
-            let reg_reg = Regex::new(old_css_reg_c.as_str()).unwrap();
+            let reg_reg = Regex::new(old_css_reg_c.as_str())?;
             rsl = match reg_reg.find(file_body.as_str()) {
                 None => "".to_string(),
                 Some(d)=> rsl.add(d.as_str())
             }
         }
-        rsl
+        Ok(rsl)
     }
 
     fn is_same(&self,a: String, b: String) -> bool {
         let mut rsl = true;
-        for s in same_str().bytes(){
+        for s in match same_str(){
+            Ok(d)=>d,
+            Err(e)=>{
+                println!("compare err is {}",e);
+                return false
+            }
+        }.bytes(){
            let s_:char = char::from(s);
            let a_ = a.chars().filter(|x| *x==s_).collect::<Vec<_>>().len();
            let b_ = b.chars().filter(|x| *x==s_).collect::<Vec<_>>().len();
@@ -165,42 +197,49 @@ impl Repl for VueRepl {
         rsl
     }
 
-    fn write(&self,new_css:String,old_css:String) {
+    fn write(&self,new_css:String,old_css:String)->Result<(),Box<dyn error::Error>>{
         // 如果不是自己的文件需要追加地址
         let out_path = self.out_path.clone();
         if !out_path.eq(&self.path) {
             let mut file_body = "".to_string();
             println!("old file is {}",out_path);
             {
-                let mut file = OpenOptions::new().read(true).write(true).open(out_path.clone()).unwrap();
-                file.read_to_string(&mut file_body).unwrap();
+                let mut file = OpenOptions::new().read(true).write(true).open(out_path.clone())?;
+                file.read_to_string(&mut file_body)?;
             }
-            let mut file = File::create(out_path).unwrap();
+            let mut file = File::create(out_path)?;
             let will_write = file_body.replace(old_css.as_str(),new_css.as_str());
             // println!("will_write:{}",will_write);
-            file.write(will_write.as_bytes()).unwrap();
+            file.write(will_write.as_bytes())?;
         }else{
             let file_body = self.get_file_body();
             let will_write = file_body.replace(old_css.as_str(),new_css.as_str());
-            let mut file = File::create(&self.path).unwrap();
+            let mut file = File::create(&self.path)?;
             // println!("will_write:{}",will_write);
-            file.write(will_write.as_bytes()).unwrap();
+            file.write(will_write.as_bytes())?;
         }
+        Ok(())
     }
 }
-pub fn same_str() ->String{
-     "qazwsxedcrfvtgbnhyujmki,ol.;p'[]1234567890-".parse().unwrap()
+pub fn same_str() ->Result<String,Box<dyn error::Error>>{
+     let rsl = match "qazwsxedcrfvtgbnhyujmki,ol.;p'[]1234567890-".parse(){
+         Ok(d)=>d,
+         Err(e)=>{
+             return Err(Box::try_from("字符串解析异常")?);
+         }
+     };
+     Ok(rsl)
 }
 // 解析输出路径，以下是全路径
 // @FileDir@FileName@FileType
-pub fn parse_out_path(file_path:String,out_path:String)->String{
+pub fn parse_out_path(file_path:String,out_path:String)->Option<String>{
     let file_path_c = Path::new(&file_path);
     let mut rsl = out_path.clone();
-    let file_dir = file_path.replace(file_path_c.file_name().unwrap().to_str().unwrap(),"");
-    let file_type = file_path_c.file_name().unwrap().to_str().unwrap().replace(file_path_c.file_stem().unwrap().to_str().unwrap(),"");
-    let file_name = file_path_c.file_name().unwrap().to_str().unwrap().replace(file_type.as_str(),"");
+    let file_dir = file_path.replace(file_path_c.file_name()?.to_str()?,"");
+    let file_type = file_path_c.file_name()?.to_str()?.replace(file_path_c.file_stem()?.to_str()?,"");
+    let file_name = file_path_c.file_name()?.to_str()?.replace(file_type.as_str(),"");
     rsl = rsl.replace("@FileDir",file_dir.as_str());
     rsl = rsl.replace("@FileName",file_name.as_str());
     rsl = rsl.replace("@FileType",file_type.as_str());
-    rsl
+    Some(rsl)
 }

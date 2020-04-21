@@ -36,15 +36,24 @@ fn file_change(path:String){
             }
         };
         // println!("new_css is {}",new_css);
-        let old_css = rep.get_old_css();
+        let old_css = match rep.get_old_css(){
+            Ok(d)=>d,
+            Err(e)=>{
+                println!("get old css err is {}",e);
+                return;
+            }
+        };
         // println!("old_css is {}",old_css);
         if old_css==""{
             println!("not find the auto css contain!forget?[{}]",path);
             return;
         }
         if !rep.is_same(new_css.clone(),old_css.clone()){
-            rep.write(new_css.clone(),old_css.clone());
-            println!("replace success!");
+            match rep.write(new_css.clone(),old_css.clone()){
+                Ok(_)=>println!("replace success!"),
+                Err(e)=>println!("replace err is {}",e)
+            };
+
         }else{
             println!("is the same!do noting!");
         }

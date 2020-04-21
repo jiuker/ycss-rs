@@ -18,7 +18,7 @@ pub trait Repl{
     fn get_file_body(&self)->String;
     fn get_class(&self) ->Result<Vec<String>,Box<dyn error::Error>>;
     fn get_new_css(&self, cls:Vec<String>) ->Result<String,Box<dyn error::Error>>;
-    fn get_old_css(&self) ->String;
+    fn get_old_css(&self) ->Result<String,Box<dyn error::Error>>;
     fn is_same(&self,a:String,b:String)->bool;
-    fn write(&self,new_css:String,old_css:String);
+    fn write(&self,new_css:String,old_css:String)->Result<(),Box<dyn error::Error>>;
 }
