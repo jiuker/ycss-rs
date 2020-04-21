@@ -15,18 +15,23 @@ pub struct VueRepl{
 }
 impl Repl for VueRepl {
     fn new(path:String) -> VueRepl {
-        let yconf_c = YCONF.lock().unwrap();
-        let mut file = std::fs::File::open(&path).unwrap();
-        let mut file_body = String::from("");
-        file.read_to_string(&mut file_body).unwrap();
         VueRepl {
-            path:path.clone(),
-            file_body,
-            out_path: match  parse_out_path(path.clone(),yconf_c.clone().outPath){
-                Some(d)=>d,
-                None => "@FileDir@FileName@FileType".to_string()
-            }
+            path,
+            file_body:"".to_string(),
+            out_path: "".to_string(),
         }
+    }
+    fn init(&mut self)->Result<(),Box<dyn error::Error>>{
+        let yconf_c = YCONF.lock()?;
+        let mut file = std::fs::File::open(&self.path)?;
+        let mut file_body = String::from("");
+        file.read_to_string(&mut file_body)?;
+        (*self).file_body = file_body;
+        (*self).out_path = match parse_out_path(self.path.clone(),yconf_c.clone().outPath){
+            Some(d)=>d,
+            None => "@FileDir@FileName@FileType".to_string()
+        };
+        Ok(())
     }
     fn get_file_body(&self) -> String {
         self.file_body.clone()

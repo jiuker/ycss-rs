@@ -19,7 +19,14 @@ fn file_change(path:String){
     }else{
         // 不是配置文件变动
         println!("get {} changed!",path);
-        let rep:VueRepl = Repl::new(path.clone());
+        let mut rep:VueRepl = Repl::new(path.clone());
+        match rep.init() {
+            Ok(_)=>{},
+            Err(e)=>{
+                println!("get new css err is {}",e);
+                return;
+            }
+        }
         let cls = match rep.get_class(){
             Ok(d)=>d,
             Err(e)=>{

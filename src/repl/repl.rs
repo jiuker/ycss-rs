@@ -15,6 +15,7 @@ pub trait Repl{
         Done()
     */
     fn new(path:String)->Self;
+    fn init(&mut self)->Result<(),Box<dyn error::Error>>;
     fn get_file_body(&self)->String;
     fn get_class(&self) ->Result<Vec<String>,Box<dyn error::Error>>;
     fn get_new_css(&self, cls:Vec<String>) ->Result<String,Box<dyn error::Error>>;
