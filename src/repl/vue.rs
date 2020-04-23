@@ -3,7 +3,7 @@ use crate::config::config::{YCONF, COMMON, SINGAL};
 use std::io::{Read, Write};
 use regex::{Regex, Captures};
 use std::ops::Add;
-use std::collections::VecDeque;
+use std::collections::{VecDeque, HashMap};
 use std::fs::{File, OpenOptions};
 use std::path::Path;
 use std::error;
@@ -145,6 +145,13 @@ impl Repl for VueRepl {
         if !self.out_path.eq(&self.path) {
             // 地址不一样
             rsl__ = rsl__.add(format!(" {}", self.path).as_ref());
+        }
+        println!("go here");
+        // replace static
+        let static_map = &yconf_c.static_map;
+        for (key,value) in static_map {
+            println!("key is {},value is {}",key,value);
+            rsl__ = rsl__.replace(format!("@{}{}{}","{",key,"}").as_str(),value.as_str());
         }
         Ok(rsl__)
     }

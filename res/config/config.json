@@ -7,13 +7,13 @@
   "zoom": 1,
   "needZoomUnit": "px|rem|upx",
   "reg": ["class=\"([^\"]+)\""],
-  "watchDir": ["/home/jiuker/goworkspace/src/dmallRedisSync/center/res/vue-element-admin/src/views/sync"],
+  "watchDir": ["./res"],
   "oldCssReg": "/\\* Automatic generation Start \\*/([^/]+)/\\*",
   "keyNeedZoom": [],
-  "static": {
+  "static_map": {
     "red": "#ff0000",
     "red-1": "#ff1100",
-    "height": 12
+    "height": "12"
   },
   "outPath": "@FileDir@FileName@FileType"
 }

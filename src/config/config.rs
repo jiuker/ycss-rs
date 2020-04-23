@@ -34,6 +34,7 @@ pub struct YConfig{
    pub zoom:f32,
    pub outUnit:String,
    pub outPath:String,
+   pub static_map:HashMap<String,String>
 }
 impl YConfig{
     pub fn is_debug(&self)->bool{
@@ -51,7 +52,8 @@ impl YConfig{
             needZoomUnit: "".to_string(),
             zoom: 0.0,
             outUnit: "".to_string(),
-            outPath: "".to_string()
+            outPath: "".to_string(),
+            static_map: Default::default()
         }
     }
 }

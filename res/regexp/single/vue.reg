@@ -234,5 +234,8 @@
 <css key="^td-n$">
     text-decoration:none
 </css>
+<css key="^test-red$">
+    color:@{red}
+</css>
 
 
