@@ -1,5 +1,5 @@
 <template>
-    <div class="f-c-1-ff0002 fs-1 bc-ff1115 d-f">1231231</div>
+    <div class="f-c-2-ff0002 fs-1 bc-ff1115 d-f">1231231</div>
     <div class="bc-000-112-231 br-nr bp-c bs-c bs-10-15"></div>
     <div class="b-3-001 br-1-123 o-1-000121 c-fff ls-12 lh-20"></div>
     <div class="ta-c ta-r ta-l"></div>
@@ -16,8 +16,8 @@
         width: 10px;
     }
     /* Automatic generation Start */
-.f-c-1-ff0002{display: -webkit-flex;
-    display: flex;justify-content:center;align-items:center;border:1px solid #ff0002;color:#ff0000}
+.f-c-2-ff0002{display: -webkit-flex;
+    display: flex;justify-content:center;align-items:center;border:2px solid #ff0002;color:#ff0000}
 .fs-1{font-size:1px;}
 .bc-ff1115{background-color:#ff1115;}
 .d-f{display: -webkit-flex;

@@ -146,11 +146,9 @@ impl Repl for VueRepl {
             // 地址不一样
             rsl__ = rsl__.add(format!(" {}", self.path).as_ref());
         }
-        println!("go here");
         // replace static
         let static_map = &yconf_c.static_map;
         for (key,value) in static_map {
-            println!("key is {},value is {}",key,value);
             rsl__ = rsl__.replace(format!("@{}{}{}","{",key,"}").as_str(),value.as_str());
         }
         Ok(rsl__)
@@ -189,22 +187,14 @@ impl Repl for VueRepl {
 
     fn is_same(&self,a: String, b: String) -> bool {
         let mut rsl = true;
-        for s in match same_str(){
-            Ok(d)=>d,
-            Err(e)=>{
-                println!("compare err is {}",e);
-                return false
+        for s in "qazwsxedcrfvtgbnhyujmki,ol.;p'[]1234567890-".chars(){
+            let a_ = a.chars().filter(|x| *x==s).collect::<Vec<_>>().len();
+            let b_ = b.chars().filter(|x| *x==s).collect::<Vec<_>>().len();
+            if a_!=b_{
+                println!("not the same char is {} a:{} b:{}",s,a_,b_);
+                rsl = false;
+                break
             }
-        }.bytes(){
-           let s_:char = char::from(s);
-           let a_ = a.chars().filter(|x| *x==s_).collect::<Vec<_>>().len();
-           let b_ = b.chars().filter(|x| *x==s_).collect::<Vec<_>>().len();
-           if a_!=b_{
-               println!("not the same char is {} a:{} b:{}",s_,a_,b_);
-               rsl = false;
-               break
-           }
-
         };
         rsl
     }
@@ -233,15 +223,7 @@ impl Repl for VueRepl {
         Ok(())
     }
 }
-pub fn same_str() ->Result<String,Box<dyn error::Error>>{
-     let rsl = match "qazwsxedcrfvtgbnhyujmki,ol.;p'[]1234567890-".parse(){
-         Ok(d)=>d,
-         Err(_)=>{
-             return Err(Box::try_from("字符串解析异常")?);
-         }
-     };
-     Ok(rsl)
-}
+
 // 解析输出路径，以下是全路径
 // @FileDir@FileName@FileType
 pub fn parse_out_path(file_path:String,out_path:String)->Option<String>{
