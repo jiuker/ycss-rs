@@ -3,7 +3,7 @@ use crate::config::config::{YCONF, COMMON, SINGAL};
 use std::io::{Read, Write};
 use regex::{Regex, Captures};
 use std::ops::Add;
-use std::collections::{VecDeque, HashMap};
+use std::collections::VecDeque;
 use std::fs::{File, OpenOptions};
 use std::path::Path;
 use std::error;
@@ -191,7 +191,7 @@ impl Repl for VueRepl {
             let a_ = a.chars().filter(|x| *x==s).collect::<Vec<_>>().len();
             let b_ = b.chars().filter(|x| *x==s).collect::<Vec<_>>().len();
             if a_!=b_{
-                println!("not the same char is {} a:{} b:{}",s,a_,b_);
+                // println!("not the same char is {} a:{} b:{}",s,a_,b_);
                 rsl = false;
                 break
             }
