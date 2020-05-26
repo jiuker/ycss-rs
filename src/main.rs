@@ -25,49 +25,27 @@ fn file_change(path:String){
         // 不是配置文件变动
         println!("get {} changed!",path);
         let mut rep:VueRepl = Repl::new(path.to_owned());
-        match rep.init() {
-            Ok(_)=>{},
-            Err(e)=>{
-                println!("get new css err is {}",e);
-                return;
-            }
-        }
-        let cls = match rep.get_class(){
-            Ok(d)=>d,
-            Err(e)=>{
-                println!("get class err is {}",e);
-                return
-            }
-        };
-        println!("cls is {:?}",cls);
-        let new_css = match rep.get_new_css(cls){
-            Ok(d)=>d,
-            Err(e)=>{
-                println!("get new css err is {}",e);
-                return;
-            }
-        };
-        // println!("new_css is {}",new_css);
-        let old_css = match rep.get_old_css(){
-            Ok(d)=>d,
-            Err(e)=>{
-                println!("get old css err is {}",e);
-                return;
-            }
-        };
-        // println!("old_css is {}",old_css);
-        if old_css==""{
-            println!("not find the auto css contain!forget?[{}]",path);
-            return;
-        }
-        if !rep.is_same(new_css.clone(),old_css.clone()){
-            match rep.write(new_css.clone(),old_css.clone()){
-                Ok(_)=>println!("replace success!"),
-                Err(e)=>println!("replace err is {}",e)
-            };
-
-        }else{
-            println!("is the same!do noting!");
-        }
+        rep.init().map(
+            |_| rep.get_class().map(
+                |cls| rep.get_new_css(cls).map(
+                    |new_css| rep.get_old_css().map(
+                        |old_css| {
+                            if old_css==""{
+                                println!("not find the auto css contain!forget?[{}]",path);
+                                return;
+                            }
+                            if !rep.is_same(new_css.clone(),old_css.clone()){
+                                match rep.write(new_css.clone(),old_css.clone()){
+                                    Ok(_)=>println!("replace success!"),
+                                    Err(e)=>println!("replace err is {}",e)
+                                };
+                            }else{
+                                println!("is the same!do noting!");
+                            };
+                        }
+                    )
+                )
+            )
+        );
     }
 }
