@@ -4,6 +4,7 @@ use std::thread::sleep;
 use std::time::Duration;
 use ycss::repl::repl::Repl;
 use ycss::repl::vue::VueRepl;
+use std::convert::TryFrom;
 
 fn main() {
     match config::set_config_path("./res/config".to_owned(),file_change){
@@ -25,27 +26,30 @@ fn file_change(path:String){
         // 不是配置文件变动
         println!("get {} changed!",path);
         let mut rep:VueRepl = Repl::new(path.to_owned());
-        rep.init().map(
-            |_| rep.get_class().map(
-                |cls| rep.get_new_css(cls).map(
-                    |new_css| rep.get_old_css().map(
+        match rep.init().and_then(
+            |_| rep.get_class().and_then(
+                |cls| rep.get_new_css(cls).and_then(
+                    |new_css| rep.get_old_css().and_then(
                         |old_css| {
                             if old_css==""{
                                 println!("not find the auto css contain!forget?[{}]",path);
-                                return;
+                                return Err(Box::try_from(format!("not find the auto css contain!forget?[{}]",path))?);
                             }
                             if !rep.is_same(new_css.clone(),old_css.clone()){
-                                match rep.write(new_css.clone(),old_css.clone()){
-                                    Ok(_)=>println!("replace success!"),
-                                    Err(e)=>println!("replace err is {}",e)
-                                };
+                                rep.write(new_css.clone(),old_css.clone())?;
                             }else{
                                 println!("is the same!do noting!");
                             };
+                            Ok(())
                         }
                     )
                 )
             )
-        );
+        ){
+            Ok(d)=>{},
+            Err(e)=>{
+                println!("e is {}",e);
+            }
+        };
     }
 }
