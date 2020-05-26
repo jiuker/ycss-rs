@@ -32,13 +32,12 @@ fn file_change(path:String){
                     |new_css| rep.get_old_css().and_then(
                         |old_css| {
                             if old_css==""{
-                                println!("not find the auto css contain!forget?[{}]",path);
                                 return Err(Box::try_from(format!("not find the auto css contain!forget?[{}]",path))?);
                             }
                             if !rep.is_same(new_css.clone(),old_css.clone()){
                                 rep.write(new_css.clone(),old_css.clone())?;
                             }else{
-                                println!("is the same!do noting!");
+                                return Err(Box::try_from("is the same! do nothing！")?);
                             };
                             Ok(())
                         }
@@ -46,9 +45,11 @@ fn file_change(path:String){
                 )
             )
         ){
-            Ok(d)=>{},
+            Ok(d)=>{
+                println!("handle file success done!");
+            },
             Err(e)=>{
-                println!("e is {}",e);
+                println!("{}",e);
             }
         };
     }

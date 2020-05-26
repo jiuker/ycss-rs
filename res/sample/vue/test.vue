@@ -9,7 +9,7 @@
     <div class="p-f p-a p-r d-b t-2 b-1 l-3 r-11 va-m zi-205"></div>
     <div class="mt-10 ml-10 mr-10 mb-10"></div>
     <div class="pt-10 pl-10 pr-10 pb-12 br-4"></div>
-    <div class="d-f fd-r ai-c jc-c ai-c fw-nw f-50 test1 pt-112"></div>
+    <div class="d-f fd-r ai-c jc-c ai-c fw-nw f-50 test1 pt-111"></div>
 </template>
 <style>
     .test{
@@ -76,7 +76,7 @@
 .fw-nw{flex-wrap:nowrap;}
 .f-50{-webkit-flex:50;
    flex:50;}
-.pt-112{padding-top:112px;}
+.pt-111{padding-top:111px;}
 
 /* Automatic generation End */
 </style>
