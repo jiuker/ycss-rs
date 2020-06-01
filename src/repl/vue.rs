@@ -213,12 +213,14 @@ impl Repl for VueRepl {
             let will_write = file_body.replace(old_css.as_str(),new_css.as_str());
             // println!("will_write:{}",will_write);
             file.write(will_write.as_bytes())?;
+            file.flush()?;
         }else{
             let file_body = self.get_file_body();
             let will_write = file_body.replace(old_css.as_str(),new_css.as_str());
             let mut file = File::create(&self.path)?;
             // println!("will_write:{}",will_write);
             file.write(will_write.as_bytes())?;
+            file.flush()?;
         }
         Ok(())
     }
