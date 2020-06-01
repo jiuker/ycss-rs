@@ -3,7 +3,7 @@ use crate::config::config::{YCONF, COMMON, SINGAL};
 use std::io::{Read, Write};
 use regex::{Regex, Captures};
 use std::ops::Add;
-use std::collections::VecDeque;
+use std::collections::{VecDeque, HashSet};
 use std::fs::{File, OpenOptions};
 use std::path::Path;
 use std::error;
@@ -54,14 +54,14 @@ impl Repl for VueRepl {
                 }
             }
         }
-        let mut cls_map:VecDeque<String> = VecDeque::new();
+        // 去重
+        let mut rsl_unique_map = HashSet::new();
         for rsl_str_split in rsl_str.split(" "){
             if rsl_str_split!=""{
-                cls_map.insert(cls_map.len(),String::from(rsl_str_split));
+                if rsl_unique_map.insert(rsl_str_split){
+                    rsl.push(String::from(rsl_str_split));
+                }
             }
-        }
-        for key in cls_map.iter(){
-            rsl.push(key.to_owned());
         }
         Ok(rsl)
     }
