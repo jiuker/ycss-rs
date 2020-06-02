@@ -1,13 +1,15 @@
 use crate::repl::repl::Repl;
-use crate::config::config::{YCONF, COMMON, SINGAL};
+use crate::config::config::{YCONF, COMMON, SINGAL, YConfig};
 use std::io::{Read, Write};
 use regex::{Regex, Captures};
 use std::ops::Add;
-use std::collections::{VecDeque, HashSet};
+use std::collections::{VecDeque, HashSet, HashMap};
 use std::fs::{File, OpenOptions};
 use std::path::Path;
 use std::error;
 use std::convert::TryFrom;
+use std::sync::MutexGuard;
+
 pub struct VueRepl{
     path:String,
     file_body:String,
@@ -22,7 +24,7 @@ impl Repl for VueRepl {
         }
     }
     fn init(&mut self)->Result<(),Box<dyn error::Error>>{
-        let yconf_c = YCONF.lock()?;
+        let yconf_c:MutexGuard<YConfig> = YCONF.lock()?;
         let mut file = std::fs::File::open(&self.path)?;
         let mut file_body = String::from("");
         file.read_to_string(&mut file_body)?;
@@ -37,7 +39,7 @@ impl Repl for VueRepl {
         self.file_body.clone()
     }
     fn get_class(&self)->Result<Vec<String>,Box<dyn error::Error>>{
-        let yconf_c = YCONF.lock()?;
+        let yconf_c:MutexGuard<YConfig> = YCONF.lock()?;
         let file_body = (*self).get_file_body();
         let mut rsl_str = String::from("");
         let mut rsl: Vec<String> = vec![];
@@ -67,8 +69,8 @@ impl Repl for VueRepl {
     }
 
     fn get_new_css(&self, cls:Vec<String>) -> Result<String,Box<dyn error::Error>> {
-        let common_c = COMMON.lock()?;
-        let singal_c = SINGAL.lock()?;
+        let common_c:MutexGuard<HashMap<String,Regex>> = COMMON.lock()?;
+        let singal_c:MutexGuard<HashMap<String,Regex>> = SINGAL.lock()?;
         let mut rsl = String::new() ;
         for cls_ in cls{
             for (value,reg) in common_c.clone(){
@@ -79,7 +81,7 @@ impl Repl for VueRepl {
                             return Err(Box::try_from("没有匹配数据!")?)
                         }
                     };
-                    let mut value_c:String = value;
+                    let mut value_c = value;
                     for match_index in 0..class_match.len() {
                         if !value_c.contains("$"){
                             break;
@@ -125,7 +127,7 @@ impl Repl for VueRepl {
         }
         rsl = format!("/* Automatic generation Start */\r\n{}\r\n/*",rsl);
         // 缩放
-        let yconf_c = YCONF.lock()?;
+        let yconf_c:MutexGuard<YConfig> = YCONF.lock()?;
         let out_unit = &yconf_c.outUnit;
         let zoom_size = &yconf_c.zoom;
         let need_zoom_uint_str = format!("([0-9|\\.]{})[ |	]{}({}){}","{1,10}","{0,3}",yconf_c.needZoomUnit,"{1,5}");
@@ -154,7 +156,7 @@ impl Repl for VueRepl {
         Ok(rsl__)
     }
     fn get_old_css(&self) ->Result<String,Box<dyn error::Error>>{
-        let yconf_c = YCONF.lock()?;
+        let yconf_c:MutexGuard<YConfig> = YCONF.lock()?;
         let file_body = self.get_file_body();
         let mut rsl = String::from("");
         // 路径是一致的
