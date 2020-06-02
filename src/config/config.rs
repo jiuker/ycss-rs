@@ -4,7 +4,7 @@ use std::io::Read;
 use crate::watch;
 use std::thread;
 use std::ops::Add;
-use std::sync::{Mutex, Arc};
+use std::sync::{Mutex, Arc, MutexGuard};
 use std::error;
 
 use quick_xml::events::Event;
@@ -75,20 +75,20 @@ pub fn load_config(path:String, cb:fn(path:String))->Result<(),Box<dyn error::Er
     f.read_to_string(&mut file_body)?;
     println!("load config:\r\n {}",file_body.to_string());
     let _yconf:YConfig = serde_json::from_str(file_body.as_str())?;
-    let mut yconf_c = YCONF.lock()?;
+    let mut yconf_c:MutexGuard<YConfig> = YCONF.lock()?;
     (*yconf_c) = _yconf.clone();
     watch::watch::watch_dir((*yconf_c).clone().watchDir, (*yconf_c).clone().hType.to_owned(),true, cb)?;
     println!("watch unlock");
     {
-        let mut common_c = COMMON.lock()?;
+        let mut common_c:MutexGuard<HashMap<String,Regex>> = COMMON.lock()?;
         (*common_c) = read_reg_file((*yconf_c).common.clone())?;
-        let mut singal_c = SINGAL.lock()?;
+        let mut singal_c:MutexGuard<HashMap<String,Regex>> = SINGAL.lock()?;
         (*singal_c) = read_reg_file((*yconf_c).single.clone())?;
     }
     Ok(())
 }
 pub fn is_debug() ->Result<bool,Box<dyn error::Error>>{
-    let yconf_c = YCONF.lock()?;
+    let yconf_c:MutexGuard<YConfig> = YCONF.lock()?;
     Ok(yconf_c.is_debug())
 }
 
