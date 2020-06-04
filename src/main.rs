@@ -1,12 +1,24 @@
 extern crate ycss;
 use ycss::config::config;
-use std::thread::sleep;
+use std::thread::{sleep, spawn};
 use std::time::Duration;
 use ycss::repl::repl::Repl;
 use ycss::repl::vue::VueRepl;
 use std::convert::TryFrom;
+use ycss::run::runner::{Runner, FileType};
 
 fn main() {
+    let run = Runner::new("./res/config/config.json");
+    run.add_dir_watch(vec!["./res/config".to_string()],".json".to_string(),FileType::Config("".to_string())).unwrap();
+    let run_c = run.clone();
+    spawn(move||{
+        run_c.watch().unwrap();
+    });
+    loop{
+        sleep(Duration::from_secs(1))
+    }
+}
+fn old_run(){
     match config::set_config_path("./res/config".to_owned(),file_change){
         Ok(_)=>(),
         Err(e)=>{
