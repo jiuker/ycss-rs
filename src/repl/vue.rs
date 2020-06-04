@@ -120,7 +120,7 @@ impl Repl for VueRepl {
     }
 
     fn get_new_css(&self, cls:Vec<String>) -> Result<String> {
-        let mut common_c:MutexGuard<HashMap<String,Regex>> = COMMON.lock()?;
+        let common_c:MutexGuard<HashMap<String,Regex>> = COMMON.lock()?;
         let mut page_reg = common_c.clone();
         let singal_c:MutexGuard<HashMap<String,Regex>> = SINGAL.lock()?;
         // 重新组装common
