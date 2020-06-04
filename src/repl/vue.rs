@@ -29,7 +29,7 @@ impl Repl for VueRepl {
         let mut file_body = String::from("");
         file.read_to_string(&mut file_body)?;
         (*self).file_body = file_body;
-        (*self).out_path = match parse_out_path(self.path.clone(),yconf_c.clone().outPath){
+        (*self).out_path = match parse_out_path(self.path.clone(),yconf_c.clone().out_path){
             Some(d)=>d,
             None => "@FileDir@FileName@FileType".to_string()
         };
@@ -128,9 +128,9 @@ impl Repl for VueRepl {
         rsl = format!("/* Automatic generation Start */\r\n{}\r\n/*",rsl);
         // 缩放
         let yconf_c:MutexGuard<YConfig> = YCONF.lock()?;
-        let out_unit = &yconf_c.outUnit;
+        let out_unit = &yconf_c.out_unit;
         let zoom_size = &yconf_c.zoom;
-        let need_zoom_uint_str = format!("([0-9|\\.]{})[ |	]{}({}){}","{1,10}","{0,3}",yconf_c.needZoomUnit,"{1,5}");
+        let need_zoom_uint_str = format!("([0-9|\\.]{})[ |	]{}({}){}", "{1,10}", "{0,3}", yconf_c.need_zoom_unit, "{1,5}");
         let reg_need_zoom = Regex::new(need_zoom_uint_str.as_str())?;
         let rsl_ = reg_need_zoom.replace_all(rsl.as_str(), |caps:&Captures| -> String {
             let base = match caps[1].parse::<f32>(){
@@ -161,7 +161,7 @@ impl Repl for VueRepl {
         let mut rsl = String::from("");
         // 路径是一致的
         if self.out_path.eq(&self.path){
-            let reg_reg = Regex::new(&yconf_c.oldCssReg.as_str())?;
+            let reg_reg = Regex::new(&yconf_c.old_css_reg.as_str())?;
             let rsl_ = match  reg_reg.find(file_body.as_str()) {
                 Some(d)=>d,
                 None =>{
@@ -175,7 +175,7 @@ impl Repl for VueRepl {
             let mut file_body = "".to_string();
             println!("old file is {}",out_path);
             OpenOptions::new().read(true).write(true).open(out_path)?.read_to_string(&mut file_body)?;
-            let mut old_css_reg_c = yconf_c.oldCssReg.clone() as String;
+            let mut old_css_reg_c = yconf_c.old_css_reg.clone() as String;
             old_css_reg_c = old_css_reg_c.add(format!(" {}", self.path).as_ref());
             println!("old css reg is {}",old_css_reg_c);
             let reg_reg = Regex::new(old_css_reg_c.as_str())?;

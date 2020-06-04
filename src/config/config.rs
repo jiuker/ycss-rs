@@ -17,16 +17,16 @@ use regex::Regex;
 #[derive(Debug,serde_derive::Serialize,serde_derive::Deserialize, Clone)]
 pub struct YConfig{
    pub debug:bool,
-   pub hType:String,
+   pub h_type:String,
    pub common:Vec<String>,
    pub single:Vec<String>,
-   pub watchDir:Vec<String>,
-   pub oldCssReg:String,
+   pub watch_dir:Vec<String>,
+   pub old_css_reg:String,
    pub reg:Vec<String>,
-   pub needZoomUnit:String,
+   pub need_zoom_unit:String,
    pub zoom:f32,
-   pub outUnit:String,
-   pub outPath:String,
+   pub out_unit:String,
+   pub out_path:String,
    pub static_map:HashMap<String,String>
 }
 impl YConfig{
@@ -36,16 +36,16 @@ impl YConfig{
     pub fn new() -> YConfig{
         YConfig{
             debug: false,
-            hType: "".to_string(),
+            h_type: "".to_string(),
             common: vec![],
             single: vec![],
-            watchDir: vec![],
-            oldCssReg: "".to_string(),
+            watch_dir: vec![],
+            old_css_reg: "".to_string(),
             reg: vec![],
-            needZoomUnit: "".to_string(),
+            need_zoom_unit: "".to_string(),
             zoom: 0.0,
-            outUnit: "".to_string(),
-            outPath: "".to_string(),
+            out_unit: "".to_string(),
+            out_path: "".to_string(),
             static_map: Default::default()
         }
     }

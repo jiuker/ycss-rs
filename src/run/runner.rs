@@ -117,7 +117,7 @@ impl <'a>Runner<'a>{
         let mut singal_c:MutexGuard<HashMap<String,Regex>> = SINGAL.lock()?;
         (*singal_c) = read_reg_file((*yconf_c).single.clone())?;
         // 添加文件监听
-        self.add_dir_watch(yconf_c.watchDir.clone(),yconf_c.hType.clone(),FileType::Normal("".to_string()))?;
+        self.add_dir_watch(yconf_c.watch_dir.clone(), yconf_c.h_type.clone(), FileType::Normal("".to_string()))?;
         Ok(())
     }
 }
