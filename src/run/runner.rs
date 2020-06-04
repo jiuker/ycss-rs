@@ -75,24 +75,23 @@ impl <'a>Runner<'a>{
         }
         loop{
             let mut config_file_watch = self.config_file_watch.lock().unwrap();
-            for (path, time) in config_file_watch.iter() {
+            for (path, time) in config_file_watch.iter_mut() {
                 let now_time = std::fs::File::open(path.clone())?.metadata()?.modified()?;
-                if !time.eq(&now_time){
-                    config_file_watch.insert(path.clone(),now_time);
+                if !(*time).eq(&now_time){
+                    *time = now_time;
                     println!("config change");
                 }
             }
 
             let mut normal_file_watch = self.normal_file_watch.lock().unwrap();
-            for (path, time) in normal_file_watch.iter() {
+            for (path, time) in normal_file_watch.iter_mut() {
                 let now_time = std::fs::File::open(path.clone())?.metadata()?.modified()?;
-                if !time.eq(&now_time){
-                    normal_file_watch.insert(path.clone(),now_time);
+                if !(*time).eq(&now_time){
+                    *time = now_time;
                     println!("normal_file change");
                 }
             }
             sleep(Duration::from_millis(500));
-            println!("once!");
         }
         Ok(())
     }
