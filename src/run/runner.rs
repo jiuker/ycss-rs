@@ -8,7 +8,7 @@ use crate::config::config::{read_reg_file};
 use regex::Regex;
 use std::io::Read;
 use crate::config::config::{YCONF, COMMON, SINGAL, YConfig};
-use std::thread::{spawn, sleep};
+use std::thread::{sleep};
 use std::sync::mpsc::{sync_channel, SyncSender, Receiver};
 
 #[derive(Debug,Clone)]
@@ -39,7 +39,7 @@ impl <'a>Runner<'a>{
     }
     pub fn add_dir_watch(&self,dir:Vec<String>,file_type:String,typ:FileType)->Result<(),Box<dyn error::Error>>{
         match typ {
-            FileType::Config(d)=>{
+            FileType::Config(_d)=>{
                 let mut paths:Vec<String> = vec![];
                 for _dir in dir {
                     for path in  read_all_paths(_dir,file_type.clone())?{
@@ -55,7 +55,7 @@ impl <'a>Runner<'a>{
                     return Err(Box::try_from( "over flow max watch file numbers!")?);
                 }
             },
-            FileType::Normal(d)=>{
+            FileType::Normal(_d)=>{
                 let mut paths:Vec<String> = vec![];
                 for _dir in dir {
                     for path in  read_all_paths(_dir,file_type.clone())?{
@@ -82,7 +82,7 @@ impl <'a>Runner<'a>{
                     let now_time = std::fs::File::open(path.clone())?.metadata()?.modified()?;
                     if !(*time).eq(&now_time){
                         *time = now_time;
-                        self.sender.send(FileType::Config(path.clone()));
+                        self.sender.send(FileType::Config(path.clone()))?;
                     }
                 }
 
@@ -91,13 +91,12 @@ impl <'a>Runner<'a>{
                     let now_time = std::fs::File::open(path.clone())?.metadata()?.modified()?;
                     if !(*time).eq(&now_time){
                         *time = now_time;
-                        self.sender.send(FileType::Normal(path.clone()));
+                        self.sender.send(FileType::Normal(path.clone()))?;
                     }
                 }
             }
             sleep(Duration::from_millis(500));
         }
-        Ok(())
     }
     pub fn load_config(&self,path:&'a str)->Result<(),Box<dyn error::Error>>{
         {

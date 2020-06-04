@@ -3,7 +3,7 @@ use crate::config::config::{YCONF, COMMON, SINGAL, YConfig};
 use std::io::{Read, Write};
 use regex::{Regex, Captures};
 use std::ops::Add;
-use std::collections::{VecDeque, HashSet, HashMap};
+use std::collections::{HashSet, HashMap};
 use std::fs::{File, OpenOptions};
 use std::path::Path;
 use std::error;

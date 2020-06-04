@@ -1,7 +1,7 @@
 extern crate ycss;
-use ycss::config::config;
-use std::thread::{sleep, spawn};
-use std::time::Duration;
+
+use std::thread::{spawn};
+
 use ycss::repl::repl::Repl;
 use ycss::repl::vue::VueRepl;
 use std::convert::TryFrom;
@@ -42,7 +42,7 @@ fn main() {
                         )
                     )
                 ){
-                    Ok(d)=>{
+                    Ok(_d)=>{
                         println!("handle file success done!");
                     },
                     Err(e)=>{
