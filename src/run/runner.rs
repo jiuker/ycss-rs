@@ -99,10 +99,8 @@ impl <'a>Runner<'a>{
         }
     }
     pub fn load_config(&self,path:&'a str)->Result<(),Box<dyn error::Error>>{
-        {
-            // 重置配置文件
-            self.normal_file_watch.lock().expect("锁失败!").clear();
-        }
+        // 重置配置文件
+        self.normal_file_watch.lock().expect("锁失败!").clear();
         // 读取配置
         println!("set config path is {}",path);
         let mut f = std::fs::File::open(path)?;
