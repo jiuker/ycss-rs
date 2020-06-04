@@ -1,11 +1,11 @@
-extern crate ycss;
+extern crate ycss_rs;
 
 use std::thread::{spawn};
 
-use ycss::repl::repl::Repl;
-use ycss::repl::vue::VueRepl;
+use ycss_rs::repl::repl::Repl;
+use ycss_rs::repl::vue::VueRepl;
 use std::convert::TryFrom;
-use ycss::run::runner::{Runner, FileType};
+use ycss_rs::run::runner::{Runner, FileType};
 
 fn main() {
     let run = Runner::new("./res/config/config.json");
