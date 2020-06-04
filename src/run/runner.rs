@@ -1,7 +1,7 @@
 use std::sync::{Arc, Mutex, MutexGuard};
 use std::time::{SystemTime, Duration};
 use std::collections::HashMap;
-use std::error;
+use std::{error, result};
 use crate::watch::watch::read_all_paths;
 use std::convert::TryFrom;
 use crate::config::config::{read_reg_file};
@@ -24,6 +24,7 @@ pub enum FileType{
     Normal(String)
 }
 const WATCH_FILE_MAX:i32=10000;
+pub type Result<T> = result::Result<T,Box<dyn error::Error>>;
 impl <'a>Runner<'a>{
     pub fn new(path:&'a str)->Self{
         let (sender,receiver)  = sync_channel::<FileType>(10);
@@ -37,7 +38,7 @@ impl <'a>Runner<'a>{
         run.load_config(path).unwrap();
         run
     }
-    pub fn add_dir_watch(&self,dir:Vec<String>,file_type:String,typ:FileType)->Result<(),Box<dyn error::Error>>{
+    pub fn add_dir_watch(&self,dir:Vec<String>,file_type:String,typ:FileType)->Result<()>{
         match typ {
             FileType::Config(_d)=>{
                 let mut paths:Vec<String> = vec![];
@@ -74,7 +75,7 @@ impl <'a>Runner<'a>{
         };
         Ok(())
     }
-    pub fn watch(&self)->Result<(),Box<dyn error::Error>>{
+    pub fn watch(&self)->Result<()>{
         loop{
             {
                 let mut config_file_watch = self.config_file_watch.lock().unwrap();
@@ -98,7 +99,7 @@ impl <'a>Runner<'a>{
             sleep(Duration::from_millis(500));
         }
     }
-    pub fn load_config(&self,path:&'a str)->Result<(),Box<dyn error::Error>>{
+    pub fn load_config(&self,path:&'a str)->Result<()>{
         // 重置配置文件
         self.normal_file_watch.lock().expect("锁失败!").clear();
         // 读取配置

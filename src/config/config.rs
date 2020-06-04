@@ -1,18 +1,12 @@
 use lazy_static::lazy_static;
 extern crate serde_json;
-
-
-
-
 use std::sync::{Mutex, Arc};
-use std::error;
-
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use std::convert::TryFrom;
 use std::collections::HashMap;
 use regex::Regex;
-
+use crate::run::runner::Result;
 
 #[derive(Debug,serde_derive::Serialize,serde_derive::Deserialize, Clone)]
 pub struct YConfig{
@@ -61,7 +55,7 @@ lazy_static! {
 }
 // pub static  COMMON:Arc<Mutex<HashMap<String,Regex>>> = Arc::new(Mutex::new(HashMap::new()));
 // pub static  SINGAL:Arc<Mutex<HashMap<String,Regex>>> = Arc::new(Mutex::new(HashMap::new()));
-pub fn read_reg_file(paths:Vec<String>)->Result<HashMap<String,Regex>, Box<dyn error::Error>>{
+pub fn read_reg_file(paths:Vec<String>)->Result<HashMap<String,Regex>>{
     println!("start read regexp!");
     let mut common_keys:Vec<String> = vec![];
     let mut common_values:Vec<String> = vec![];

@@ -6,7 +6,7 @@ use std::ops::Add;
 use std::collections::{HashSet, HashMap};
 use std::fs::{File, OpenOptions};
 use std::path::Path;
-use std::error;
+use crate::run::runner::Result;
 use std::convert::TryFrom;
 use std::sync::MutexGuard;
 
@@ -23,7 +23,7 @@ impl Repl for VueRepl {
             out_path: "".to_string(),
         }
     }
-    fn init(&mut self)->Result<(),Box<dyn error::Error>>{
+    fn init(&mut self)->Result<()>{
         let yconf_c:MutexGuard<YConfig> = YCONF.lock()?;
         let mut file = std::fs::File::open(&self.path)?;
         let mut file_body = String::from("");
@@ -38,7 +38,7 @@ impl Repl for VueRepl {
     fn get_file_body(&self) -> String {
         self.file_body.clone()
     }
-    fn get_class(&self)->Result<Vec<String>,Box<dyn error::Error>>{
+    fn get_class(&self)->Result<Vec<String>>{
         let yconf_c:MutexGuard<YConfig> = YCONF.lock()?;
         let file_body = (*self).get_file_body();
         let mut rsl_str = String::from("");
@@ -68,7 +68,7 @@ impl Repl for VueRepl {
         Ok(rsl)
     }
 
-    fn get_new_css(&self, cls:Vec<String>) -> Result<String,Box<dyn error::Error>> {
+    fn get_new_css(&self, cls:Vec<String>) -> Result<String> {
         let common_c:MutexGuard<HashMap<String,Regex>> = COMMON.lock()?;
         let singal_c:MutexGuard<HashMap<String,Regex>> = SINGAL.lock()?;
         let mut rsl = String::new() ;
@@ -155,7 +155,7 @@ impl Repl for VueRepl {
         }
         Ok(rsl__)
     }
-    fn get_old_css(&self) ->Result<String,Box<dyn error::Error>>{
+    fn get_old_css(&self) ->Result<String>{
         let yconf_c:MutexGuard<YConfig> = YCONF.lock()?;
         let file_body = self.get_file_body();
         let mut rsl = String::from("");
@@ -201,7 +201,7 @@ impl Repl for VueRepl {
         rsl
     }
 
-    fn write(&self,new_css:String,old_css:String)->Result<(),Box<dyn error::Error>>{
+    fn write(&self,new_css:String,old_css:String)->Result<()>{
         // 如果不是自己的文件需要追加地址
         let out_path = self.out_path.clone();
         if !out_path.eq(&self.path) {
