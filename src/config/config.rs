@@ -13,14 +13,7 @@ use std::convert::TryFrom;
 use std::collections::HashMap;
 use regex::Regex;
 
-pub fn set_config_path(path:String,cb:fn(path:String))->Result<(),Box<dyn error::Error>> {
-    let path_c = path.clone().add("/config.json");
-    thread::spawn(move||{
-        cb(path_c.clone());
-    });
-    watch::watch::watch_dir(vec![path.clone()], "json".to_owned(),false, cb)?;
-    Ok(())
-}
+
 #[derive(Debug,serde_derive::Serialize,serde_derive::Deserialize, Clone)]
 pub struct YConfig{
    pub debug:bool,
@@ -68,30 +61,6 @@ lazy_static! {
 }
 // pub static  COMMON:Arc<Mutex<HashMap<String,Regex>>> = Arc::new(Mutex::new(HashMap::new()));
 // pub static  SINGAL:Arc<Mutex<HashMap<String,Regex>>> = Arc::new(Mutex::new(HashMap::new()));
-pub fn load_config(path:String, cb:fn(path:String))->Result<(),Box<dyn error::Error>>{
-    println!("set config path is {}",path);
-    let mut f = std::fs::File::open(path)?;
-    let mut file_body = String::from("");
-    f.read_to_string(&mut file_body)?;
-    println!("load config:\r\n {}",file_body.to_string());
-    let _yconf:YConfig = serde_json::from_str(file_body.as_str())?;
-    let mut yconf_c:MutexGuard<YConfig> = YCONF.lock()?;
-    (*yconf_c) = _yconf.clone();
-    watch::watch::watch_dir((*yconf_c).clone().watchDir, (*yconf_c).clone().hType.to_owned(),true, cb)?;
-    println!("watch unlock");
-    {
-        let mut common_c:MutexGuard<HashMap<String,Regex>> = COMMON.lock()?;
-        (*common_c) = read_reg_file((*yconf_c).common.clone())?;
-        let mut singal_c:MutexGuard<HashMap<String,Regex>> = SINGAL.lock()?;
-        (*singal_c) = read_reg_file((*yconf_c).single.clone())?;
-    }
-    Ok(())
-}
-pub fn is_debug() ->Result<bool,Box<dyn error::Error>>{
-    let yconf_c:MutexGuard<YConfig> = YCONF.lock()?;
-    Ok(yconf_c.is_debug())
-}
-
 pub fn read_reg_file(paths:Vec<String>)->Result<HashMap<String,Regex>, Box<dyn error::Error>>{
     println!("start read regexp!");
     let mut common_keys:Vec<String> = vec![];

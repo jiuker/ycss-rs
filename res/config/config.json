@@ -13,7 +13,7 @@
   "static_map": {
     "red": "#ff0000",
     "red-1": "#ff1100",
-    "height": "1"
+    "height": "15"
   },
   "outPath": "@FileDir@FileName@FileType"
 }

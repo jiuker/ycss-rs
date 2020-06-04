@@ -9,12 +9,15 @@ use regex::Regex;
 use std::io::Read;
 use crate::config::config::{YCONF, COMMON, SINGAL, YConfig};
 use std::thread::{spawn, sleep};
+use std::sync::mpsc::{sync_channel, SyncSender, Receiver};
 
 #[derive(Debug,Clone)]
 pub struct Runner<'a>{
     config_path:&'a str,
     config_file_watch:Arc<Mutex<HashMap<String,SystemTime>>>,
     normal_file_watch:Arc<Mutex<HashMap<String,SystemTime>>>,
+    sender:SyncSender<FileType>,
+    pub receiver:Arc<Mutex<Receiver<FileType>>>,
 }
 pub enum FileType{
     Config(String),
@@ -23,10 +26,13 @@ pub enum FileType{
 const WATCH_FILE_MAX:i32=10000;
 impl <'a>Runner<'a>{
     pub fn new(path:&'a str)->Self{
+        let (sender,receiver)  = sync_channel::<FileType>(10);
         let run = Runner{
             config_path: path,
             config_file_watch: Arc::new(Mutex::new(Default::default())),
-            normal_file_watch: Arc::new(Mutex::new(Default::default()))
+            normal_file_watch: Arc::new(Mutex::new(Default::default())),
+            sender,
+            receiver:Arc::new(Mutex::new(receiver)),
         };
         run.load_config(path).unwrap();
         run
@@ -69,26 +75,24 @@ impl <'a>Runner<'a>{
         Ok(())
     }
     pub fn watch(&self)->Result<(),Box<dyn error::Error>>{
-        {
-            let mut yconf_c:MutexGuard<YConfig> = YCONF.lock()?;
-            self.add_dir_watch(yconf_c.watchDir.clone(),yconf_c.hType.clone(),FileType::Normal("".to_string()))?;
-        }
         loop{
-            let mut config_file_watch = self.config_file_watch.lock().unwrap();
-            for (path, time) in config_file_watch.iter_mut() {
-                let now_time = std::fs::File::open(path.clone())?.metadata()?.modified()?;
-                if !(*time).eq(&now_time){
-                    *time = now_time;
-                    println!("config change");
+            {
+                let mut config_file_watch = self.config_file_watch.lock().unwrap();
+                for (path, time) in config_file_watch.iter_mut() {
+                    let now_time = std::fs::File::open(path.clone())?.metadata()?.modified()?;
+                    if !(*time).eq(&now_time){
+                        *time = now_time;
+                        self.sender.send(FileType::Config(path.clone()));
+                    }
                 }
-            }
 
-            let mut normal_file_watch = self.normal_file_watch.lock().unwrap();
-            for (path, time) in normal_file_watch.iter_mut() {
-                let now_time = std::fs::File::open(path.clone())?.metadata()?.modified()?;
-                if !(*time).eq(&now_time){
-                    *time = now_time;
-                    println!("normal_file change");
+                let mut normal_file_watch = self.normal_file_watch.lock().unwrap();
+                for (path, time) in normal_file_watch.iter_mut() {
+                    let now_time = std::fs::File::open(path.clone())?.metadata()?.modified()?;
+                    if !(*time).eq(&now_time){
+                        *time = now_time;
+                        self.sender.send(FileType::Normal(path.clone()));
+                    }
                 }
             }
             sleep(Duration::from_millis(500));
@@ -96,9 +100,10 @@ impl <'a>Runner<'a>{
         Ok(())
     }
     pub fn load_config(&self,path:&'a str)->Result<(),Box<dyn error::Error>>{
-        // 重置配置文件
-        self.config_file_watch.lock().expect("锁失败!").clear();
-        self.normal_file_watch.lock().expect("锁失败!").clear();
+        {
+            // 重置配置文件
+            self.normal_file_watch.lock().expect("锁失败!").clear();
+        }
         // 读取配置
         println!("set config path is {}",path);
         let mut f = std::fs::File::open(path)?;
@@ -108,13 +113,12 @@ impl <'a>Runner<'a>{
         let _yconf:YConfig = serde_json::from_str(file_body.as_str())?;
         let mut yconf_c:MutexGuard<YConfig> = YCONF.lock()?;
         (*yconf_c) = _yconf.clone();
-        println!("watch unlock");
-        {
-            let mut common_c:MutexGuard<HashMap<String,Regex>> = COMMON.lock()?;
-            (*common_c) = read_reg_file((*yconf_c).common.clone())?;
-            let mut singal_c:MutexGuard<HashMap<String,Regex>> = SINGAL.lock()?;
-            (*singal_c) = read_reg_file((*yconf_c).single.clone())?;
-        }
+        let mut common_c:MutexGuard<HashMap<String,Regex>> = COMMON.lock()?;
+        (*common_c) = read_reg_file((*yconf_c).common.clone())?;
+        let mut singal_c:MutexGuard<HashMap<String,Regex>> = SINGAL.lock()?;
+        (*singal_c) = read_reg_file((*yconf_c).single.clone())?;
+        // 添加文件监听
+        self.add_dir_watch(yconf_c.watchDir.clone(),yconf_c.hType.clone(),FileType::Normal("".to_string()))?;
         Ok(())
     }
 }

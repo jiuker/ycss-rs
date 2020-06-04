@@ -5,7 +5,7 @@
     <div class="ta-c ta-r ta-l"></div>
     <div class="fs-20 fw-100"></div>
     <div class="m-1010 p-0505 h-10 w-21 h10 w10"></div>
-    <div class="maxh-23 maxw-10 minh-11 minw-22"></div>
+    <div class="maxh-23 maxw-10 minh-11 minw-122"></div>
     <div class="p-f p-a p-r d-b t-2 b-1 l-3 r-11 va-m zi-205"></div>
     <div class="mt-10 ml-10 mr-10 mb-10"></div>
     <div class="pt-10 pl-10 pr-10 pb-12 br-4"></div>
@@ -47,7 +47,7 @@
 .maxh-23{max-height:23px;}
 .maxw-10{max-width:10px;}
 .minh-11{min-height:11px;}
-.minw-22{min-width:22px;}
+.minw-122{min-width:122px;}
 .p-f{position:fixed;}
 .p-a{position:absolute;}
 .p-r{position:relative;}
@@ -67,12 +67,9 @@
 .pr-10{padding-right:10px;}
 .pb-12{padding-bottom:12px;}
 .br-4{border-radius:4px;}
-.d-f{display: -webkit-flex;
-    display: flex;}
 .fd-r{flex-direction:row;}
 .ai-c{align-items:center;}
 .jc-c{justify-content:center;}
-.ai-c{align-items:center;}
 .fw-nw{flex-wrap:nowrap;}
 .f-50{-webkit-flex:50;
    flex:50;}
