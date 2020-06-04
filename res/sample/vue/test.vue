@@ -5,12 +5,14 @@
     <div class="ta-c ta-r ta-l"></div>
     <div class="fs-20 fw-100"></div>
     <div class="m-1010 p-0505 h-10 w-21 h10 w10"></div>
-    <div class="maxh-23 maxw-10 minh-11 minw-122"></div>
+    <div class="maxh-23 maxw-20 minh-11 minw-122"></div>
     <div class="p-f p-a p-r d-b t-2 b-1 l-3 r-11 va-m zi-205"></div>
     <div class="mt-10 ml-10 mr-10 mb-10"></div>
-    <div class="pt-10 pl-10 pr-10 pb-12 br-4"></div>
-    <div class="d-f fd-r ai-c jc-c ai-c fw-nw f-50 test1 pt-111"></div>
+    <div class="pt-10 pl-10 pr-10 pb-11 br-11"></div>
+    <div class="d-f fd-r ai-c jc-c ai-c fw-nw f-50 test1 pt-110 box-12-13 box2-44-13 f-c-12-111"></div>
 </template>
+/* c-class=" box-(\d{1,5})-(\d{1,5})<h-$1 w-$2> " */
+/* c-class=" box2-(\d{1,5})-(\d{1,5})<w-$1 h-$2> " */
 <style>
     .test{
         width: 10px;
@@ -45,7 +47,7 @@
 .h10{height:10%;}
 .w10{width:10%;}
 .maxh-23{max-height:23px;}
-.maxw-10{max-width:10px;}
+.maxw-20{max-width:20px;}
 .minh-11{min-height:11px;}
 .minw-122{min-width:122px;}
 .p-f{position:fixed;}
@@ -65,15 +67,19 @@
 .pt-10{padding-top:10px;}
 .pl-10{padding-left:10px;}
 .pr-10{padding-right:10px;}
-.pb-12{padding-bottom:12px;}
-.br-4{border-radius:4px;}
+.pb-11{padding-bottom:11px;}
+.br-11{border-radius:11px;}
 .fd-r{flex-direction:row;}
 .ai-c{align-items:center;}
 .jc-c{justify-content:center;}
 .fw-nw{flex-wrap:nowrap;}
 .f-50{-webkit-flex:50;
    flex:50;}
-.pt-111{padding-top:111px;}
+.pt-110{padding-top:110px;}
+.box-12-13{height:12px;width:13px;}
+.box2-44-13{width:44px;height:13px;}
+.f-c-12-111{display: -webkit-flex;
+    display: flex;justify-content:center;align-items:center;border:12px solid #111;color:#ff0000}
 
 /* Automatic generation End */
 </style>

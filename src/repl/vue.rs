@@ -14,6 +14,7 @@ pub struct VueRepl{
     path:String,
     file_body:String,
     out_path:String,
+    page_common:HashMap<String,Regex>
 }
 impl Repl for VueRepl {
     fn new(path:String) -> VueRepl {
@@ -21,6 +22,7 @@ impl Repl for VueRepl {
             path,
             file_body:"".to_string(),
             out_path: "".to_string(),
+            page_common: Default::default()
         }
     }
     fn init(&mut self)->Result<()>{
@@ -28,11 +30,60 @@ impl Repl for VueRepl {
         let mut file = std::fs::File::open(&self.path)?;
         let mut file_body = String::from("");
         file.read_to_string(&mut file_body)?;
-        (*self).file_body = file_body;
+        // 赋值文件的body
+        (*self).file_body = file_body.clone();
+        // 识别输出路径
         (*self).out_path = match parse_out_path(self.path.clone(),yconf_c.clone().out_path){
             Some(d)=>d,
             None => "@FileDir@FileName@FileType".to_string()
         };
+        // 查询页面级别的公共样式
+        let mut page_common_str = "".to_string();
+        for page_common in &yconf_c.page_common{
+            let page_common_reg = Regex::new(page_common)?;
+            let rsl_ = page_common_reg.find_iter(file_body.as_str()).map(|x| x.as_str().to_string()).collect::<Vec<_>>();
+            for rsl__ in rsl_{
+                let mut index = 0;
+                for rsl___ in rsl__.split("\""){
+                    if index == 1{
+                        page_common_str=page_common_str+rsl___;
+                    }
+                    index = index + 1;
+                }
+            }
+        };
+        // dbg!(page_common_str);
+        let mut page_common_vec = vec![];
+        for  rsl_ in page_common_str.split("<"){
+            for mut rsl__ in rsl_.split(">"){
+                rsl__ = rsl__.trim();
+                rsl__ = rsl__.trim_end();
+                if rsl__!=""{
+                    page_common_vec.push(String::from(rsl__));
+                }
+            }
+        }
+        if page_common_vec.len()%2!=0{
+            return Err(Box::try_from("页面级别公共样式不正确!")?);
+        }
+        let mut common_keys:Vec<String> = vec![];
+        let mut common_values:Vec<String> = vec![];
+        let mut index = 0;
+        while  index<page_common_vec.len(){
+            if index%2==0{
+                common_keys.push("^".to_string()+ page_common_vec[index].clone().as_ref() + "$".to_string().as_ref())
+            }else{
+                common_values.push(page_common_vec[index].clone())
+            }
+            index = index + 1;
+        }
+        index = 0;
+        while  index<common_values.len(){
+            self.page_common.insert(common_values[index].clone(),Regex::new(common_keys[index].as_str())?);
+            index = index + 1;
+        }
+        // dbg!(common_values);
+        // dbg!(self.page_common.clone());
         Ok(())
     }
     fn get_file_body(&self) -> String {
@@ -69,11 +120,16 @@ impl Repl for VueRepl {
     }
 
     fn get_new_css(&self, cls:Vec<String>) -> Result<String> {
-        let common_c:MutexGuard<HashMap<String,Regex>> = COMMON.lock()?;
+        let mut common_c:MutexGuard<HashMap<String,Regex>> = COMMON.lock()?;
+        let mut page_reg = common_c.clone();
         let singal_c:MutexGuard<HashMap<String,Regex>> = SINGAL.lock()?;
+        // 重新组装common
+        for (value,reg) in self.page_common.clone(){
+            page_reg.insert(value.clone(),reg.clone());
+        }
         let mut rsl = String::new() ;
         for cls_ in cls{
-            for (value,reg) in common_c.clone(){
+            for (value,reg) in page_reg.clone(){
                 if reg.is_match(&cls_.as_str()){
                     let class_match = match reg.captures(cls_.as_str()){
                         Some(d)=>d,
@@ -92,29 +148,33 @@ impl Repl for VueRepl {
                     // println!("{:?}",value_c);
                     let mut css_content = String::from("");
                     for value_c_split in value_c.split("\n"){
-                        let value_c_split_trim = value_c_split.trim().to_string();
-                        for (sv,sr) in singal_c.clone(){
-                            let mut sv_c = sv;
-                            let value_c1 = &value_c_split_trim;
-                            if sr.is_match(value_c1.as_str()){
-                                let sr_match =match sr.captures(value_c1.as_str()){
-                                    Some(d)=>d,
-                                    None=>{
-                                        return Err(Box::try_from("没有匹配数据!")?)
+                        if value_c_split!=""{
+                            for value_c_split_ in value_c_split.split(" "){
+                                let value_c_split_trim = value_c_split_.trim().to_string();
+                                for (sv,sr) in singal_c.clone(){
+                                    let mut sv_c = sv;
+                                    let value_c1 = &value_c_split_trim;
+                                    if sr.is_match(value_c1.as_str()){
+                                        let sr_match =match sr.captures(value_c1.as_str()){
+                                            Some(d)=>d,
+                                            None=>{
+                                                return Err(Box::try_from("没有匹配数据!")?)
+                                            }
+                                        };
+                                        for mr_index in 0..sr_match.len() {
+                                            if !sv_c.contains("$"){
+                                                break;
+                                            }
+                                            sv_c = sv_c.replace(format!("${}",mr_index).as_str(),&sr_match[mr_index])
+                                        }
+                                        // println!("{:?}",sv_c);
+                                        // set as css
+                                        if !css_content.is_empty(){
+                                            sv_c = sv_c.add("\r\n");
+                                        }
+                                        css_content = css_content.add(sv_c.trim());
                                     }
-                                };
-                                for mr_index in 0..sr_match.len() {
-                                    if !sv_c.contains("$"){
-                                        break;
-                                    }
-                                    sv_c = sv_c.replace(format!("${}",mr_index).as_str(),&sr_match[mr_index])
                                 }
-                                // println!("{:?}",sv_c);
-                                // set as css
-                                if !css_content.is_empty(){
-                                    sv_c = sv_c.add("\r\n");
-                                }
-                                css_content = css_content.add(sv_c.trim());
                             }
                         }
                     }
