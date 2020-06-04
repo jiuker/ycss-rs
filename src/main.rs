@@ -8,11 +8,11 @@ use std::convert::TryFrom;
 use ycss_rs::run::runner::{Runner, FileType};
 
 fn main() {
-    println!(r#"ycss-rs start
+    println!("ycss-rs start
             go....
                 go...
                     go...
-    "#);
+    ");
     let run = Runner::new("./res/config/config.json");
     run.add_dir_watch(vec!["./res/config".to_string()],".json".to_string(),FileType::Config("".to_string())).unwrap();
     let run_c = run.clone();
