@@ -1,13 +1,33 @@
-extern crate ycss_rs;
+#[macro_use]
 
+
+
+use actix_web::{middleware, web, App, Error as AWError, HttpResponse, HttpServer};
+
+extern crate ycss_rs;
 use std::thread::{spawn};
 
 use ycss_rs::repl::repl::Repl;
 use ycss_rs::repl::vue::VueRepl;
 use std::convert::TryFrom;
 use ycss_rs::run::runner::{Runner, FileType};
-
-fn main() {
+use std::env::set_var;
+use actix_web::middleware::Logger;
+use ycss_rs::server::router::MyRouter;
+#[actix_rt::main]
+async fn main() -> std::io::Result<()> {
+    set_var("RUST_LOG", "actix_web=info");
+    env_logger::init();
+    HttpServer::new(||{
+        App::new()
+            .wrap(Logger::default())
+            .service(web::resource("/res/regexp/js/sync.js").to(MyRouter::syncjs))
+    })
+    .bind("127.0.0.1:5060")?
+    .run()
+    .await
+}
+fn handle(){
     println!("ycss-rs start
             go....
                 go...
