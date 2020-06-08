@@ -16,6 +16,9 @@ use actix_web::middleware::Logger;
 use ycss_rs::server::router::my_router;
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
+    spawn(move||{
+        handle()
+    });
     set_var("RUST_LOG", "actix_web=info");
     env_logger::init();
     HttpServer::new(||{

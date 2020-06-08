@@ -32,7 +32,7 @@ function HTMLCSS(){
                     break;
                 case 1:
                     window.addEventListener("keypress",function(e){ //c复制
-                        if(e.keyCode==99){
+                        if(e.keyCode===99){
                             if(typeof HTMLCOPY !='function'){
                                 var content = "没有内容";
                                 var aux = document.createElement("textarea");
@@ -291,6 +291,12 @@ setTimeout(function(){
     var htmlcssObj=new HTMLCSS();
     htmlcssObj.init(window.location.href);
 });
+/*
+*  this.regexps.push({
+      rp: new RegExp(/^com-tt-(\d{1,2})-(\d{1,2})-(\d{3,3})(\d{3,3})(\d{3,3})(\d{2,2})$/), //宽，高，颜色
+      rep: "width:0;height:0;border-width:0 $1px $2px $1px  ;border-style:solid;border-color: transparent  transparent rbga($3,$4,$5,$6) transparent;"
+   })
+*/
 HTMLCSS.prototype.initRegExp=function(){
     //insertHere
 }
