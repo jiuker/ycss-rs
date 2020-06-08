@@ -13,7 +13,7 @@ use std::convert::TryFrom;
 use ycss_rs::run::runner::{Runner, FileType};
 use std::env::set_var;
 use actix_web::middleware::Logger;
-use ycss_rs::server::router::MyRouter;
+use ycss_rs::server::router::my_router;
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
     set_var("RUST_LOG", "actix_web=info");
@@ -21,7 +21,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(||{
         App::new()
             .wrap(Logger::default())
-            .service(web::resource("/res/regexp/js/sync.js").to(MyRouter::syncjs))
+            .service(web::resource("/res/regexp/js/sync.js").to(my_router::syncjs))
     })
     .bind("127.0.0.1:5060")?
     .run()
