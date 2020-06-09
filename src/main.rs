@@ -6,7 +6,7 @@ use actix_web::{middleware, web, App, Error as AWError, HttpResponse, HttpServer
 
 extern crate ycss_rs;
 use std::thread::{spawn};
-
+use actix_files as fs;
 use ycss_rs::repl::repl::Repl;
 use ycss_rs::repl::vue::VueRepl;
 use std::convert::TryFrom;
@@ -25,6 +25,8 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(Logger::default())
             .service(web::resource("/res/regexp/js/sync.js").to(my_router::syncjs))
+            .service(web::resource("/").to(my_router::testHtml))
+            .service(fs::Files::new("/res/", "res/"))
     })
     .bind("127.0.0.1:5060")?
     .run()

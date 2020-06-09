@@ -298,5 +298,5 @@ setTimeout(function(){
    })
 */
 HTMLCSS.prototype.initRegExp=function(){
-    //insertHere
+//insertHere
 }
