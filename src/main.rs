@@ -1,7 +1,3 @@
-#[macro_use]
-
-
-
 use actix_web::{middleware, web, App, Error as AWError, HttpResponse, HttpServer};
 
 extern crate ycss_rs;
@@ -25,7 +21,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(Logger::default())
             .service(web::resource("/res/regexp/js/sync.js").to(my_router::syncjs))
-            .service(web::resource("/").to(my_router::testHtml))
+            .service(web::resource("/").to(my_router::test_html))
             .service(fs::Files::new("/res/", "res/"))
     })
     .bind("127.0.0.1:5060")?

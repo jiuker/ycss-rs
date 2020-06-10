@@ -25,7 +25,7 @@ pub mod my_router {
         Ok(HttpResponse::Ok().body(bufStr))
     }
 
-    pub async fn testHtml(_req: HttpRequest) -> Result<HttpResponse, Error> {
+    pub async fn test_html(_req: HttpRequest) -> Result<HttpResponse, Error> {
         Ok(HttpResponse::Found().header("LOCATION","./res/sample/js/test.html").finish())
     }
 }

@@ -10,6 +10,30 @@ use crate::run::runner::Result;
 use std::convert::TryFrom;
 use std::sync::MutexGuard;
 
+macro_rules! char_count {
+    ($countStr:ident,$countChar:ident) =>(
+        $countStr.chars().filter(|x| *x==$countChar).collect::<Vec<_>>().len()
+    );
+}
+
+macro_rules! str_match_reg {
+    ($file_body:ident,$reg:expr,$result:ident) => (
+        for page_common in $reg{
+            let page_common_reg = Regex::new(page_common)?;
+            let rsl_ = page_common_reg.find_iter($file_body.as_str()).map(|x| x.as_str().to_string()).collect::<Vec<_>>();
+            for rsl__ in rsl_{
+                let mut index = 0;
+                for rsl___ in rsl__.split("\""){
+                    if index == 1{
+                        $result=$result+rsl___;
+                    }
+                    index = index + 1;
+                }
+            }
+        };
+    )
+}
+
 pub struct VueRepl{
     path:String,
     file_body:String,
@@ -39,19 +63,7 @@ impl Repl for VueRepl {
         };
         // 查询页面级别的公共样式
         let mut page_common_str = "".to_string();
-        for page_common in &yconf_c.page_common{
-            let page_common_reg = Regex::new(page_common)?;
-            let rsl_ = page_common_reg.find_iter(file_body.as_str()).map(|x| x.as_str().to_string()).collect::<Vec<_>>();
-            for rsl__ in rsl_{
-                let mut index = 0;
-                for rsl___ in rsl__.split("\""){
-                    if index == 1{
-                        page_common_str=page_common_str+rsl___;
-                    }
-                    index = index + 1;
-                }
-            }
-        };
+        str_match_reg!(file_body,&yconf_c.page_common,page_common_str);
         // dbg!(page_common_str);
         let mut page_common_vec = vec![];
         for  rsl_ in page_common_str.split("<"){
@@ -94,19 +106,7 @@ impl Repl for VueRepl {
         let file_body = (*self).get_file_body();
         let mut rsl_str = String::from("");
         let mut rsl: Vec<String> = vec![];
-        for reg in &yconf_c.reg{
-            let reg_reg = Regex::new(reg)?;
-            let rsl_ = reg_reg.find_iter(file_body.as_str()).map(|x| x.as_str().to_string()).collect::<Vec<_>>();
-            for rsl__ in rsl_{
-                let mut index = 0;
-                for rsl___ in rsl__.split("\""){
-                    if index == 1{
-                        rsl_str = rsl_str.add(" ").add(rsl___);
-                    }
-                    index = index + 1;
-                }
-            }
-        }
+        str_match_reg!(file_body,&yconf_c.reg,rsl_str);
         // 去重
         let mut rsl_unique_map = HashSet::new();
         for rsl_str_split in rsl_str.split(" "){
@@ -250,8 +250,8 @@ impl Repl for VueRepl {
     fn is_same(&self,a: String, b: String) -> bool {
         let mut rsl = true;
         for s in "qazwsxedcrfvtgbnhyujmki,ol.;p'[]1234567890-".chars(){
-            let a_ = a.chars().filter(|x| *x==s).collect::<Vec<_>>().len();
-            let b_ = b.chars().filter(|x| *x==s).collect::<Vec<_>>().len();
+            let a_ = char_count!(a,s);
+            let b_ = char_count!(b,s);
             if a_!=b_{
                 // println!("not the same char is {} a:{} b:{}",s,a_,b_);
                 rsl = false;
@@ -301,3 +301,4 @@ pub fn parse_out_path(file_path:String,out_path:String)->Option<String>{
     rsl = rsl.replace("@FileType",file_type.as_str());
     Some(rsl)
 }
+
