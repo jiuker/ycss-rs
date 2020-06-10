@@ -23,6 +23,38 @@ pub enum FileType{
     Config(String),
     Normal(String)
 }
+macro_rules! add_dir_watch {
+    ($file_watch:expr,$dir:ident,$file_type:ident) => (
+        let mut paths:Vec<String> = vec![];
+        for _dir in $dir {
+            for path in  read_all_paths(_dir,$file_type.clone())?{
+                paths.push(path);
+            }
+        }
+        println!("load file:{:?}",paths);
+        let mut file_watch = $file_watch.lock().expect("锁上失败!");
+        for path in paths{
+            file_watch.insert(path.clone(), std::fs::File::open(path.clone())?.metadata()?.modified()?);
+        }
+        if (file_watch.len() as i32) >= WATCH_FILE_MAX {
+            return Err(Box::try_from( "over flow max watch file numbers!")?);
+        }
+    );
+}
+
+macro_rules! watch {
+    ($file_watch:expr,$sender:expr,$file_type:expr) => (
+        let mut file_watch = $file_watch.lock().unwrap();
+        for (path, time) in file_watch.iter_mut() {
+            let now_time = std::fs::File::open(path.clone())?.metadata()?.modified()?;
+            if !(*time).eq(&now_time){
+                *time = now_time;
+                $sender.send($file_type(path.clone()))?;
+            }
+        }
+    );
+}
+
 const WATCH_FILE_MAX:i32=10000;
 pub type Result<T> = result::Result<T,Box<dyn error::Error>>;
 impl <'a>Runner<'a>{
@@ -41,36 +73,10 @@ impl <'a>Runner<'a>{
     pub fn add_dir_watch(&self,dir:Vec<String>,file_type:String,typ:FileType)->Result<()>{
         match typ {
             FileType::Config(_d)=>{
-                let mut paths:Vec<String> = vec![];
-                for _dir in dir {
-                    for path in  read_all_paths(_dir,file_type.clone())?{
-                        paths.push(path);
-                    }
-                }
-                println!("load file:{:?}",paths);
-                let mut config_file_watch = self.config_file_watch.lock().expect("锁上失败!");
-                for path in paths{
-                    config_file_watch.insert(path.clone(), std::fs::File::open(path.clone())?.metadata()?.modified()?);
-                }
-                if (config_file_watch.len() as i32) >= WATCH_FILE_MAX {
-                    return Err(Box::try_from( "over flow max watch file numbers!")?);
-                }
+                add_dir_watch!(self.config_file_watch,dir,file_type);
             },
             FileType::Normal(_d)=>{
-                let mut paths:Vec<String> = vec![];
-                for _dir in dir {
-                    for path in  read_all_paths(_dir,file_type.clone())?{
-                        paths.push(path);
-                    }
-                }
-                println!("load file:{:?}",paths);
-                let mut normal_file_watch = self.normal_file_watch.lock().expect("锁上失败!");
-                for path in paths{
-                    normal_file_watch.insert(path.clone(), std::fs::File::open(path.clone())?.metadata()?.modified()?);
-                }
-                if (normal_file_watch.len() as i32) >= WATCH_FILE_MAX {
-                    return Err(Box::try_from( "over flow max watch file numbers!")?);
-                }
+                add_dir_watch!(self.normal_file_watch,dir,file_type);
             }
         };
         Ok(())
@@ -78,23 +84,8 @@ impl <'a>Runner<'a>{
     pub fn watch(&self)->Result<()>{
         loop{
             {
-                let mut config_file_watch = self.config_file_watch.lock().unwrap();
-                for (path, time) in config_file_watch.iter_mut() {
-                    let now_time = std::fs::File::open(path.clone())?.metadata()?.modified()?;
-                    if !(*time).eq(&now_time){
-                        *time = now_time;
-                        self.sender.send(FileType::Config(path.clone()))?;
-                    }
-                }
-
-                let mut normal_file_watch = self.normal_file_watch.lock().unwrap();
-                for (path, time) in normal_file_watch.iter_mut() {
-                    let now_time = std::fs::File::open(path.clone())?.metadata()?.modified()?;
-                    if !(*time).eq(&now_time){
-                        *time = now_time;
-                        self.sender.send(FileType::Normal(path.clone()))?;
-                    }
-                }
+                watch!(self.config_file_watch,self.sender,FileType::Config);
+                watch!(self.normal_file_watch,self.sender,FileType::Normal);
             }
             sleep(Duration::from_millis(500));
         }
