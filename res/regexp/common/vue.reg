@@ -236,3 +236,11 @@
     b-$1-$2
     test-red
 </css>
+<css key="^o-h$">
+    o-h
+</css>
+<css key="^bs-bb$">
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+</css>

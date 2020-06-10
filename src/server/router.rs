@@ -27,4 +27,13 @@ pub mod my_router {
     pub async fn test_html(_req: HttpRequest) -> Result<HttpResponse, Error> {
         Ok(HttpResponse::Found().header("LOCATION","./res/sample/js/test.html").finish())
     }
+    pub async fn main_html(_req: HttpRequest) -> Result<HttpResponse, Error> {
+        Ok(HttpResponse::Found().header("LOCATION","./res/sample/js/main.html").finish())
+    }
+    pub async fn get_config(_req: HttpRequest) -> Result<HttpResponse, Error> {
+        let mut f = std::fs::File::open("./res/config/config.json")?;
+        let mut file_body = String::from("");
+        f.read_to_string(&mut file_body)?;
+        Ok(HttpResponse::Ok().header("Content-Type","application/json").body(file_body))
+    }
 }

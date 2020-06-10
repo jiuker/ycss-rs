@@ -237,5 +237,9 @@
 <css key="^test-red$">
     color:@{red}
 </css>
-
-
+<css key="^o-h$">
+    overflow:hidden;
+</css>
+<css key="^bs-bb$">
+    bs-bb
+</css>
