@@ -42,7 +42,7 @@ macro_rules! add_dir_watch {
     );
 }
 
-macro_rules! watch {
+macro_rules! check_file_change {
     ($file_watch:expr,$sender:expr,$file_type:expr) => (
         let mut file_watch = $file_watch.lock().unwrap();
         for (path, time) in file_watch.iter_mut() {
@@ -84,8 +84,8 @@ impl <'a>Runner<'a>{
     pub fn watch(&self)->Result<()>{
         loop{
             {
-                watch!(self.config_file_watch,self.sender,FileType::Config);
-                watch!(self.normal_file_watch,self.sender,FileType::Normal);
+                check_file_change!(self.config_file_watch,self.sender,FileType::Config);
+                check_file_change!(self.normal_file_watch,self.sender,FileType::Normal);
             }
             sleep(Duration::from_millis(500));
         }
