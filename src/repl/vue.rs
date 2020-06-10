@@ -1,4 +1,5 @@
 use crate::repl::repl::Repl;
+use crate::set_reg_hash;
 use crate::config::config::{YCONF, COMMON, SINGAL, YConfig};
 use std::io::{Read, Write};
 use regex::{Regex, Captures};
@@ -89,11 +90,7 @@ impl Repl for VueRepl {
             }
             index = index + 1;
         }
-        index = 0;
-        while  index<common_values.len(){
-            self.page_common.insert(common_values[index].clone(),Regex::new(common_keys[index].as_str())?);
-            index = index + 1;
-        }
+        set_reg_hash!(common_keys,common_values,self.page_common);
         // dbg!(common_values);
         // dbg!(self.page_common.clone());
         Ok(())

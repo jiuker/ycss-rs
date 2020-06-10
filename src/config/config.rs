@@ -57,6 +57,16 @@ lazy_static! {
 }
 // pub static  COMMON:Arc<Mutex<HashMap<String,Regex>>> = Arc::new(Mutex::new(HashMap::new()));
 // pub static  SINGAL:Arc<Mutex<HashMap<String,Regex>>> = Arc::new(Mutex::new(HashMap::new()));
+#[macro_export(set_reg_hash)]
+macro_rules! set_reg_hash {
+    ($key:ident,$value:ident,$hash:expr) => (
+        let mut index = 0;
+        while  index<$value.len(){
+            $hash.insert($value[index].clone(),Regex::new($key[index].as_str())?);
+            index = index + 1;
+        }
+    )
+}
 pub fn read_reg_file(paths:Vec<String>)->Result<HashMap<String,Regex>>{
     println!("start read regexp!");
     let mut common_keys:Vec<String> = vec![];
@@ -108,11 +118,7 @@ pub fn read_reg_file(paths:Vec<String>)->Result<HashMap<String,Regex>>{
         return Err(Box::try_from("通用配置出现异常!")?);
     }
     let mut common_reg_map:HashMap<String,Regex> = HashMap::new();
-    let mut index = 0;
-    while  index<common_values.len(){
-        common_reg_map.insert(common_values[index].clone(),Regex::new(common_keys[index].as_str())?);
-        index = index + 1;
-    }
+    set_reg_hash!(common_keys,common_values,common_reg_map);
     println!("reg_map is{:?}",common_reg_map);
     println!("read reg file done!");
     Ok(common_reg_map)
