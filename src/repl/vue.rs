@@ -58,7 +58,7 @@ impl Repl for VueRepl {
         }
     }
     fn init(&mut self) -> Result<()> {
-        let yconf_c: MutexGuard<YConfig> = YCONF.lock()?;
+        let yconf_c = YCONF.lock()?;
         let mut file = std::fs::File::open(&self.path)?;
         let mut file_body = String::from("");
         file.read_to_string(&mut file_body)?;
@@ -86,8 +86,8 @@ impl Repl for VueRepl {
         if page_common_vec.len() % 2 != 0 {
             return Err(Box::from("页面级别公共样式不正确!"));
         }
-        let mut common_keys: Vec<String> = vec![];
-        let mut common_values: Vec<String> = vec![];
+        let mut common_keys = vec![];
+        let mut common_values = vec![];
         let mut index = 0;
         while index < page_common_vec.len() {
             if index % 2 == 0 {
@@ -110,7 +110,7 @@ impl Repl for VueRepl {
         self.file_body.clone()
     }
     fn get_class(&self) -> Result<Vec<String>> {
-        let yconf_c: MutexGuard<YConfig> = YCONF.lock()?;
+        let yconf_c = YCONF.lock()?;
         let file_body = (*self).get_file_body();
         let mut rsl_str = String::from("");
         let mut rsl: Vec<String> = vec![];
@@ -128,9 +128,9 @@ impl Repl for VueRepl {
     }
 
     fn get_new_css(&self, cls: Vec<String>) -> Result<String> {
-        let common_c: MutexGuard<HashMap<String, Regex>> = COMMON.lock()?;
+        let common_c = COMMON.lock()?;
         let mut page_reg = common_c.clone();
-        let singal_c: MutexGuard<HashMap<String, Regex>> = SINGAL.lock()?;
+        let singal_c = SINGAL.lock()?;
         // 重新组装common
         for (value, reg) in self.page_common.clone() {
             page_reg.insert(value.clone(), reg.clone());
@@ -206,7 +206,7 @@ impl Repl for VueRepl {
         }
         rsl = format!("/* Automatic generation Start */\r\n{}\r\n/*", rsl);
         // 缩放
-        let yconf_c: MutexGuard<YConfig> = YCONF.lock()?;
+        let yconf_c = YCONF.lock()?;
         let out_unit = &yconf_c.out_unit;
         let zoom_size = &yconf_c.zoom;
         let need_zoom_uint_str = format!(
@@ -238,7 +238,7 @@ impl Repl for VueRepl {
         Ok(rsl__)
     }
     fn get_old_css(&self) -> Result<String> {
-        let yconf_c: MutexGuard<YConfig> = YCONF.lock()?;
+        let yconf_c = YCONF.lock()?;
         let file_body = self.get_file_body();
         let mut rsl = String::from("");
         // 路径是一致的
