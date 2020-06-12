@@ -57,12 +57,12 @@ fn handle(){
                             |new_css| rep.get_old_css().and_then(
                                 |old_css| {
                                     if old_css==""{
-                                        return Err(Box::try_from(format!("not find the auto css contain!forget?[{}]",path))?);
+                                        return Err(Box::from(format!("not find the auto css contain!forget?[{}]",path)));
                                     }
                                     if !rep.is_same(new_css.clone(),old_css.clone()){
                                         rep.write(new_css.clone(),old_css.clone())?;
                                     }else{
-                                        return Err(Box::try_from("is the same! do nothing！")?);
+                                        return Err(Box::from("is the same! do nothing！"));
                                     };
                                     Ok(())
                                 }
