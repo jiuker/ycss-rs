@@ -19,14 +19,14 @@ macro_rules! char_count {
 
 macro_rules! str_match_reg {
     ($file_body:ident,$reg:expr,$result:ident) => (
-        for page_common in $reg{
-            let page_common_reg = Regex::new(page_common)?;
-            let rsl_ = page_common_reg.find_iter($file_body.as_str()).map(|x| x.as_str().to_string()).collect::<Vec<_>>();
+        for reg_str in $reg{
+            let reg = Regex::new(reg_str)?;
+            let rsl_ = reg.find_iter($file_body.as_str()).map(|x| x.as_str().to_string()).collect::<Vec<_>>();
             for rsl__ in rsl_{
                 let mut index = 0;
                 for rsl___ in rsl__.split("\""){
                     if index == 1{
-                        $result=$result+rsl___;
+                        $result=$result+" "+rsl___;
                     }
                     index = index + 1;
                 }
@@ -126,6 +126,9 @@ impl Repl for VueRepl {
         }
         let mut rsl = String::new() ;
         for cls_ in cls{
+            if cls_.is_empty(){
+                continue;
+            }
             for (value,reg) in page_reg.clone(){
                 if reg.is_match(&cls_.as_str()){
                     let class_match = match reg.captures(cls_.as_str()){

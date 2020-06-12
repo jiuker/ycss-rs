@@ -241,5 +241,11 @@
     overflow:hidden;
 </css>
 <css key="^bs-bb$">
-    bs-bb
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
 </css>
+<css key="^ti-(\d{1,2})$">
+   text-indent: $1em;
+</css>
+

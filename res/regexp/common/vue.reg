@@ -240,7 +240,8 @@
     o-h
 </css>
 <css key="^bs-bb$">
-    box-sizing:border-box;
-    -moz-box-sizing:border-box;
-    -webkit-box-sizing:border-box;
+  bs-bb
+</css>
+<css key="^ti-(\d{1,2})$">
+   ti-$1
 </css>
