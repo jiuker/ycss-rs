@@ -77,7 +77,6 @@ impl Repl for VueRepl {
         for rsl_ in page_common_str.split("<") {
             for mut rsl__ in rsl_.split(">") {
                 rsl__ = rsl__.trim();
-                rsl__ = rsl__.trim_end();
                 if rsl__ != "" {
                     page_common_vec.push(String::from(rsl__));
                 }
