@@ -22,7 +22,7 @@ async fn main() -> std::io::Result<()> {
             .service(web::resource("/test").to(my_router::test_html))
             .service(web::resource("/").to(my_router::main_html))
             .service(fs::Files::new("/res/", "res/"))
-            .service(web::resource("/api/get_config").to(my_router::get_config))
+            .route("/api/get_config", web::get().to(my_router::get_config))
     })
     .bind("127.0.0.1:5060")?
     .run()
@@ -47,7 +47,7 @@ fn handle() {
     spawn(move || {
         run_c.watch().unwrap();
     });
-    while let file = run.receiver.lock().unwrap().recv().unwrap() {
+    while let Ok(file) = run.receiver.lock().unwrap().recv() {
         match file {
             FileType::Config(path) => run.load_config(path.as_str()).unwrap(),
             FileType::Normal(path) => {
