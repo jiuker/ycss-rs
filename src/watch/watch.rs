@@ -1,7 +1,7 @@
 use std::ops::Add;
 extern crate regex;
 use crate::run::runner::Result;
-use std::convert::TryFrom;
+
 
 pub fn read_all_paths(dir: String, file_type: String) -> Result<Vec<String>> {
     let dirs = std::fs::read_dir(dir)?;

@@ -3,7 +3,7 @@ use actix_web::{middleware, web, App, Error as AWError, HttpResponse, HttpServer
 extern crate ycss_rs;
 use actix_files as fs;
 use actix_web::middleware::Logger;
-use std::convert::TryFrom;
+
 use std::env::set_var;
 use std::thread::spawn;
 use ycss_rs::repl::repl::Repl;

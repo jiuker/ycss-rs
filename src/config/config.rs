@@ -4,9 +4,9 @@ use crate::run::runner::Result;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use regex::Regex;
-use std::borrow::Cow;
+
 use std::collections::HashMap;
-use std::convert::TryFrom;
+
 use std::sync::{Arc, Mutex};
 
 #[derive(Debug, serde_derive::Serialize, serde_derive::Deserialize, Clone)]
