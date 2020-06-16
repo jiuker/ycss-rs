@@ -4,6 +4,7 @@ use crate::run::runner::Result;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use regex::Regex;
+use std::borrow::Cow;
 use std::collections::HashMap;
 use std::convert::TryFrom;
 use std::sync::{Arc, Mutex};
@@ -79,19 +80,18 @@ pub fn read_reg_file(paths: Vec<String>) -> Result<HashMap<String, Regex>> {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name() {
                     b"css" => {
-                        let attr = e
-                            .attributes()
+                        e.attributes()
                             .map(|x| match x {
                                 Ok(d) => return Some(d.value),
                                 Err(_) => return None,
                             })
-                            .collect::<Option<Vec<_>>>();
-                        for x in match attr {
-                            Some(d) => d,
-                            None => vec![],
-                        } {
-                            common_keys.push(String::from_utf8(x.to_vec())?);
-                        }
+                            .collect::<Option<Vec<_>>>()
+                            .map(|attr| -> Result<()> {
+                                for x in attr {
+                                    common_keys.push(String::from_utf8(x.to_vec())?);
+                                }
+                                Ok(())
+                            });
                     }
                     _ => {}
                 },
