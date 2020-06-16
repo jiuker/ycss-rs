@@ -57,6 +57,7 @@ lazy_static! {
 }
 // pub static  COMMON:Arc<Mutex<HashMap<String,Regex>>> = Arc::new(Mutex::new(HashMap::new()));
 // pub static  SINGAL:Arc<Mutex<HashMap<String,Regex>>> = Arc::new(Mutex::new(HashMap::new()));
+// keys，values，写入的地方
 #[macro_export(set_reg_hash)]
 macro_rules! set_reg_hash {
     ($key:ident,$value:ident,$hash:expr) => {

@@ -20,7 +20,7 @@ macro_rules! char_count {
             .len()
     };
 }
-
+// 数据，匹配规则，接收结果
 macro_rules! str_match_reg {
     ($file_body:ident,$reg:expr,$result:ident) => {
         for reg_str in $reg {
@@ -41,7 +41,24 @@ macro_rules! str_match_reg {
         }
     };
 }
-
+macro_rules! find_captures {
+    ($reg:ident,$str:ident) => {
+        match $reg.captures($str.as_str()) {
+            Some(d) => d,
+            None => return Err(Box::from("没有匹配数据!")),
+        }
+    };
+}
+macro_rules! replace_placeholder {
+    ($target:ident,$rules:ident) => {
+        for index in 0..$rules.len() {
+            if !$target.contains("$") {
+                break;
+            }
+            $target = $target.replace(format!("${}", index).as_str(), &$rules[index])
+        }
+    };
+}
 pub struct VueRepl {
     path: String,
     file_body: String,
@@ -139,52 +156,27 @@ impl Repl for VueRepl {
             if cls_.is_empty() {
                 continue;
             }
-            for (value, reg) in page_reg.clone() {
+            for (mut value, reg) in page_reg.clone() {
                 if reg.is_match(&cls_.as_str()) {
-                    let class_match = match reg.captures(cls_.as_str()) {
-                        Some(d) => d,
-                        None => return Err(Box::from("没有匹配数据!")),
-                    };
-                    let mut value_c = value;
-                    for match_index in 0..class_match.len() {
-                        if !value_c.contains("$") {
-                            break;
-                        }
-                        value_c = value_c.replace(
-                            format!("${}", match_index).as_str(),
-                            &class_match[match_index],
-                        );
-                    }
+                    let class_match = find_captures!(reg, cls_);
+                    replace_placeholder!(value, class_match);
                     // get the common replace value:bb-1-fff \n c-1-fff
                     // println!("{:?}",value_c);
                     let mut css_content = String::from("");
-                    for value_c_split in value_c.split("\n") {
+                    for value_c_split in value.split("\n") {
                         if value_c_split != "" {
                             for value_c_split_ in value_c_split.split(" ") {
                                 let value_c_split_trim = value_c_split_.trim().to_string();
-                                for (sv, sr) in singal_c.clone() {
-                                    let mut sv_c = sv;
-                                    let value_c1 = &value_c_split_trim;
-                                    if sr.is_match(value_c1.as_str()) {
-                                        let sr_match = match sr.captures(value_c1.as_str()) {
-                                            Some(d) => d,
-                                            None => return Err(Box::from("没有匹配数据!")),
-                                        };
-                                        for mr_index in 0..sr_match.len() {
-                                            if !sv_c.contains("$") {
-                                                break;
-                                            }
-                                            sv_c = sv_c.replace(
-                                                format!("${}", mr_index).as_str(),
-                                                &sr_match[mr_index],
-                                            )
-                                        }
+                                for (mut sv, sr) in singal_c.clone() {
+                                    if sr.is_match(value_c_split_trim.as_str()) {
+                                        let sr_match = find_captures!(sr, value_c_split_trim);
+                                        replace_placeholder!(sv, sr_match);
                                         // println!("{:?}",sv_c);
                                         // set as css
                                         if !css_content.is_empty() {
-                                            sv_c = sv_c.add("\r\n");
+                                            sv = sv.add("\r\n");
                                         }
-                                        css_content = css_content.add(sv_c.trim());
+                                        css_content = css_content.add(sv.trim());
                                     }
                                 }
                             }
