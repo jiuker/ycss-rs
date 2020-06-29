@@ -52,7 +52,7 @@ fn handle() {
             FileType::Config(path) => run.load_config(path.as_str()).unwrap(),
             FileType::Normal(path) => {
                 // 不是配置文件变动
-                println!("get {:>15} changed!", path);
+                println!("get {:>25} changed!", path);
                 let mut rep: VueRepl = Repl::new(path.to_owned());
                 match rep.init().and_then(|_| {
                     rep.get_class().and_then(|cls| {
