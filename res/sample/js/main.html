@@ -5,8 +5,7 @@
 <body>
     <div id="bVue">
         <div class="ta-c c-606266 fs-20">控制中心</div>
-        <div class="d-ib c-13ce66 p-0005 b-1-606266 br-5 o-h">
-            <div class="line">配置:</div>
+        <div class="d-ib c-666666 p-0005 b-1-606266 br-5 o-h ml-20">
             <div class="line">是否debug:{{config.debug}}</div>
             <div class="line">监听类型:{{config.h_type}}</div>
             <div class="line">公共的配置:{{config.common}}</div>
@@ -19,7 +18,7 @@
             <div class="line">监控目录:{{config.watch_dir}}</div>
             <div class="line">老样式的位置:{{config.old_css_reg}}</div>
             <div class="line">需要缩放的key:{{config.key_need_zoom}}</div>
-            <div class="line">css的输出地:{{config.out_path}}</div>
+            <div class="line">css的输出地方:{{config.out_path}}</div>
         </div>
     </div>
 </body>
@@ -27,7 +26,7 @@
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-    // c-class="*{p-0000 m-0000} .line{w100 h-40 lh-40 fs-20} .line+.line{ bt-1-606266}"
+    // c-class="*{p-0000 m-0000} .line{w100 h-24 lh-24 fs-12} .line+.line{ bt-1-606266}"
     var v = new Vue({
         el:"#bVue",
         data:{
@@ -50,12 +49,22 @@
         },
         created(){
             this.getConfig()
+            this.wslog()
         },
         methods:{
             getConfig(){
                 axios.get("/api/get_config").then(response => {
                     this.config = response.data;
                 })
+            },
+            wslog(){
+                var ws = new WebSocket("ws://127.0.0.1:5060/ws/log")
+                ws.onmessage = function (data) {
+                    console.log(data)
+                }
+                setInterval(()=>{
+                    ws.send(new Date())
+                },1000)
             }
         }
     })

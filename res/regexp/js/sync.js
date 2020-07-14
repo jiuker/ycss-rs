@@ -67,7 +67,7 @@ function HTMLCSS(){
                         //    // 删除创建元素
                         document.body.removeChild(aux);
                     }
-                    document.querySelector('body').insertAdjacentHTML('afterBegin','<div" style="width: 40px;height: 40px;background-color: rgba(255,0,0,0.5);position: fixed;left: 0;top: 0;z-index:111111111;"></div>')
+                    document.querySelector('body').insertAdjacentHTML('afterBegin','<div" style="width: 40px;height: 40px;background-color: rgba(100,100,100,0.5);position: fixed;left: 0;top: 0;z-index:111111111;"></div>')
                     console.log(window.location.href+"->>>>>>"+"need fixed!")
                     break;
                 case 2:

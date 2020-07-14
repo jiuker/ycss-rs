@@ -23,6 +23,7 @@ async fn main() -> std::io::Result<()> {
             .service(web::resource("/").to(my_router::main_html))
             .service(fs::Files::new("/res/", "res/"))
             .route("/api/get_config", web::get().to(my_router::get_config))
+            .route("/ws/log", web::get().to(my_router::log))
     })
     .bind("127.0.0.1:5060")?
     .run()
