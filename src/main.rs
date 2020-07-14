@@ -5,7 +5,6 @@ use actix_files as fs;
 use actix_web::middleware::Logger;
 
 use std::env::set_var;
-use std::sync::mpsc::channel;
 use std::thread::spawn;
 use ycss_rs::repl::repl::Repl;
 use ycss_rs::repl::vue::VueRepl;
