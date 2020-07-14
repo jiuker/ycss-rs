@@ -11,7 +11,6 @@ pub mod my_router {
     use std::io::Read;
     use std::ops::Add;
     use std::sync::MutexGuard;
-
     pub async fn syncjs(_req: HttpRequest) -> Result<HttpResponse, Error> {
         let mut file = File::open("./res/regexp/js/sync.js").expect("没有读取到文件");
         let mut buf = vec![];

@@ -62,9 +62,12 @@
                 ws.onmessage = function (data) {
                     console.log(data)
                 }
-                setInterval(()=>{
+                var interval = setInterval(()=>{
                     ws.send(new Date())
                 },1000)
+                ws.onclose = function () {
+                    clearInterval(interval)
+                }
             }
         }
     })
