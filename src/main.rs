@@ -32,11 +32,11 @@ async fn main() -> std::io::Result<()> {
 }
 fn handle() {
     println!(
-        "ycss-rs start
+        r#"ycss-rs start ""
             go....
                 go...
                     go...
-    "
+    "#
     );
     let run = Runner::new("./res/config/config.json");
     run.add_dir_watch(
