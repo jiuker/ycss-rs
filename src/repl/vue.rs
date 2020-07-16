@@ -2,14 +2,15 @@ use crate::config::config::{COMMON, SINGAL, YCONF};
 use crate::repl::repl::Repl;
 use crate::run::runner::Result;
 use crate::set_reg_hash;
+use crate::web_log;
 use regex::{Captures, Regex};
 use std::collections::{HashMap, HashSet};
 
+use crate::log::log::LOGCH;
 use std::fs::{File, OpenOptions};
 use std::io::{Read, Write};
 use std::ops::Add;
 use std::path::Path;
-
 
 macro_rules! char_count {
     ($countStr:ident,$countChar:ident) => {
@@ -161,7 +162,7 @@ impl Repl for VueRepl {
                     let class_match = find_captures!(reg, cls_);
                     replace_placeholder!(value, class_match);
                     // get the common replace value:bb-1-fff \n c-1-fff
-                    // println!("{:?}",value_c);
+                    // web_log!(LOGCH,"{:?}",value_c);
                     let mut css_content = String::from("");
                     for value_c_split in value.split("\n") {
                         if value_c_split != "" {
@@ -171,7 +172,7 @@ impl Repl for VueRepl {
                                     if sr.is_match(value_c_split_trim.as_str()) {
                                         let sr_match = find_captures!(sr, value_c_split_trim);
                                         replace_placeholder!(sv, sr_match);
-                                        // println!("{:?}",sv_c);
+                                        // web_log!(LOGCH,"{:?}",sv_c);
                                         // set as css
                                         if !css_content.is_empty() {
                                             sv = sv.add("\r\n");
@@ -189,7 +190,7 @@ impl Repl for VueRepl {
                         css_content.as_str(),
                         "}\r\n"
                     );
-                    // println!("{:?}",rsl_string.as_str());
+                    // web_log!(LOGCH,"{:?}",rsl_string.as_str());
                     rsl = rsl.add(rsl_string.as_str());
                     break;
                 }
@@ -246,7 +247,7 @@ impl Repl for VueRepl {
             // 路径不一致
             let out_path = &self.out_path;
             let mut file_body = "".to_string();
-            println!("old file is {}", out_path);
+            web_log!(LOGCH, "old file is {}", out_path);
             OpenOptions::new()
                 .read(true)
                 .write(true)
@@ -254,7 +255,7 @@ impl Repl for VueRepl {
                 .read_to_string(&mut file_body)?;
             let mut old_css_reg_c = yconf_c.old_css_reg.clone() as String;
             old_css_reg_c = old_css_reg_c.add(format!(" {}", self.path).as_ref());
-            println!("old css reg is {}", old_css_reg_c);
+            web_log!(LOGCH, "old css reg is {}", old_css_reg_c);
             let reg_reg = Regex::new(old_css_reg_c.as_str())?;
             rsl = match reg_reg.find(file_body.as_str()) {
                 None => "".to_string(),
@@ -270,7 +271,7 @@ impl Repl for VueRepl {
             let a_ = char_count!(a, s);
             let b_ = char_count!(b, s);
             if a_ != b_ {
-                // println!("not the same char is {} a:{} b:{}",s,a_,b_);
+                // web_log!(LOGCH,"not the same char is {} a:{} b:{}",s,a_,b_);
                 rsl = false;
                 break;
             }
@@ -283,7 +284,7 @@ impl Repl for VueRepl {
         let out_path = self.out_path.clone();
         if !out_path.eq(&self.path) {
             let mut file_body = "".to_string();
-            println!("old file is {}", out_path);
+            web_log!(LOGCH, "old file is {}", out_path);
             {
                 let mut file = OpenOptions::new()
                     .read(true)
@@ -293,14 +294,14 @@ impl Repl for VueRepl {
             }
             let mut file = File::create(out_path)?;
             let will_write = file_body.replace(old_css.as_str(), new_css.as_str());
-            // println!("will_write:{}",will_write);
+            // web_log!(LOGCH,"will_write:{}",will_write);
             file.write(will_write.as_bytes())?;
             file.flush()?;
         } else {
             let file_body = self.get_file_body();
             let will_write = file_body.replace(old_css.as_str(), new_css.as_str());
             let mut file = File::create(&self.path)?;
-            // println!("will_write:{}",will_write);
+            // web_log!(LOGCH,"will_write:{}",will_write);
             file.write(will_write.as_bytes())?;
             file.flush()?;
         }

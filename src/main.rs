@@ -1,15 +1,16 @@
-use actix_web::{middleware, web, App, Error as AWError, HttpResponse, HttpServer};
+use actix_web::{web, App, HttpServer};
 
 extern crate ycss_rs;
 use actix_files as fs;
 use actix_web::middleware::Logger;
-
 use std::env::set_var;
 use std::thread::spawn;
+use ycss_rs::log::log::LOGCH;
 use ycss_rs::repl::repl::Repl;
 use ycss_rs::repl::vue::VueRepl;
 use ycss_rs::run::runner::{FileType, Runner};
 use ycss_rs::server::router::my_router;
+use ycss_rs::web_log;
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
@@ -31,7 +32,8 @@ async fn main() -> std::io::Result<()> {
     .await
 }
 fn handle() {
-    println!(
+    web_log!(
+        LOGCH,
         r#"ycss-rs start ""
             go....
                 go...
@@ -54,7 +56,7 @@ fn handle() {
             FileType::Config(path) => run.load_config(path.as_str()).unwrap(),
             FileType::Normal(path) => {
                 // 不是配置文件变动
-                println!("get {:>25} changed!", path);
+                web_log!(LOGCH, "get {:>25} changed!", path);
                 let mut rep: VueRepl = Repl::new(path.to_owned());
                 match rep.init().and_then(|_| {
                     rep.get_class().and_then(|cls| {
@@ -77,10 +79,10 @@ fn handle() {
                     })
                 }) {
                     Ok(_d) => {
-                        println!("handle file success done!");
+                        web_log!(LOGCH, "handle file success done!");
                     }
                     Err(e) => {
-                        println!("{}", e);
+                        web_log!(LOGCH, "{}", e);
                     }
                 };
             }

@@ -1,3 +1,4 @@
+use crate::web_log;
 use lazy_static::lazy_static;
 extern crate serde_json;
 use crate::run::runner::Result;
@@ -5,6 +6,7 @@ use quick_xml::events::Event;
 use quick_xml::Reader;
 use regex::Regex;
 
+use crate::log::log::LOGCH;
 use std::collections::HashMap;
 
 use std::sync::{Arc, Mutex};
@@ -70,7 +72,7 @@ macro_rules! set_reg_hash {
     };
 }
 pub fn read_reg_file(paths: Vec<String>) -> Result<HashMap<String, Regex>> {
-    println!("start read regexp!");
+    web_log!(LOGCH, "start read regexp!");
     let mut common_keys: Vec<String> = vec![];
     let mut common_values: Vec<String> = vec![];
     for p in paths {
@@ -103,7 +105,8 @@ pub fn read_reg_file(paths: Vec<String>) -> Result<HashMap<String, Regex>> {
                 }
                 Ok(Event::Eof) => break,
                 Err(e) => {
-                    println!(
+                    web_log!(
+                        LOGCH,
                         "reader err is {:?} and position is {}",
                         e,
                         reader.buffer_position()
@@ -114,14 +117,14 @@ pub fn read_reg_file(paths: Vec<String>) -> Result<HashMap<String, Regex>> {
             }
         }
     }
-    println!("keys   is {:?}", common_keys);
-    println!("values is {:?}", common_values);
+    web_log!(LOGCH, "keys   is {:?}", common_keys);
+    web_log!(LOGCH, "values is {:?}", common_values);
     if common_keys.len() != common_values.len() {
         return Err(Box::from("通用配置出现异常!"));
     }
     let mut common_reg_map: HashMap<String, Regex> = HashMap::new();
     set_reg_hash!(common_keys, common_values, common_reg_map);
-    println!("reg_map is{:?}", common_reg_map);
-    println!("read reg file done!");
+    web_log!(LOGCH, "reg_map is{:?}", common_reg_map);
+    web_log!(LOGCH, "read reg file done!");
     Ok(common_reg_map)
 }

@@ -1,6 +1,8 @@
 pub mod my_router {
     use crate::config::config::SINGAL;
-    use actix::{Actor, StreamHandler};
+    use crate::log::log::LOGCH;
+    use actix::clock::Duration;
+    use actix::{Actor, AsyncContext, StreamHandler};
     use actix_web::web::Payload;
     use actix_web::{Error, HttpRequest, HttpResponse};
     use actix_web_actors::ws;
@@ -11,6 +13,7 @@ pub mod my_router {
     use std::io::Read;
     use std::ops::Add;
     use std::sync::MutexGuard;
+
     pub async fn syncjs(_req: HttpRequest) -> Result<HttpResponse, Error> {
         let mut file = File::open("./res/regexp/js/sync.js").expect("没有读取到文件");
         let mut buf = vec![];
@@ -54,8 +57,17 @@ pub mod my_router {
     struct WSLog;
     impl Actor for WSLog {
         type Context = ws::WebsocketContext<Self>;
+        fn started(&mut self, ctx: &mut Self::Context) {
+            ctx.run_interval(Duration::from_millis(10), |_act, ctx| {
+                let mut log_ch = LOGCH.lock().unwrap();
+                let log_data = log_ch.receive();
+                if !log_data.is_empty() {
+                    ctx.text(log_data)
+                }
+            });
+        }
     }
-
+    // 处理接收到的数据
     impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WSLog {
         fn handle(&mut self, msg: Result<Message, ProtocolError>, ctx: &mut Self::Context) {
             match msg {
