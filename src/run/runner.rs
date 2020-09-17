@@ -97,7 +97,7 @@ impl<'a> Runner<'a> {
     }
     pub fn load_config(&self, path: &'a str) -> Result<()> {
         // 重置配置文件
-        self.normal_file_watch.lock().expect("锁失败!").clear();
+        self.config_file_watch.lock().expect("锁失败!").clear();
         // 读取配置
         web_log!(LOGCH, "set config path is {}", path);
         let mut f = std::fs::File::open(path)?;
