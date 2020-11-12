@@ -16,6 +16,7 @@ use ycss_rs::web_log;
 async fn main() -> std::io::Result<()> {
     spawn(move || handle());
     set_var("RUST_LOG", "actix_web=info");
+    println!("listen: {}", "http://127.0.0.1:5060");
     env_logger::init();
     HttpServer::new(|| {
         App::new()
