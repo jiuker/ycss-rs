@@ -4,24 +4,28 @@
 <style></style>
 <body>
     <div class="ta-c c-606266 fs-20">控制中心</div>
-    <div id="bVue" class="d-f p-0020">
-        <div class="d-ib c-666666 p-0005 b-1-606266 br-5 o-h">
-            <div class="line">是否debug:{{config.debug}}</div>
-            <div class="line">监听类型:{{config.h_type}}</div>
-            <div class="line">公共的配置:{{config.common}}</div>
-            <div class="line">最小单元的配置:{{config.single}}</div>
-            <div class="line">输出单位:{{config.out_unit}}</div>
-            <div class="line">缩放:{{config.zoom}}</div>
-            <div class="line">需要缩放的单位:{{config.need_zoom_unit}}</div>
-            <div class="line">需要处理class规则:{{config.reg}}</div>
-            <div class="line">页面临时class规则:{{config.page_common}}</div>
-            <div class="line">监控目录:{{config.watch_dir}}</div>
-            <div class="line">老样式的位置:{{config.old_css_reg}}</div>
-            <div class="line">需要缩放的key:{{config.key_need_zoom}}</div>
-            <div class="line">css的输出地方:{{config.out_path}}</div>
-        </div>
-        <div v-html="web_log_html" class="d-ib c-777777 h-900 f-1 o-s p-1010 br-10 b-1-aaaaaa o-a">
+    <div id="bVue" class="d-f p-0020 p-r">
+        <div class="bc-409eff br-10 p-0510 d-ib fs-14 p-a t-0 r-0 c-fff" @click="web_log=[]">清除</div>
+        <div v-html="web_log_html" class=" c-777 h-900  o-s p-1010 br-10 b-1-aaa o-a">
 
+        </div>
+<!--        弹窗-->
+        <div class="p-a t-0 l-0 w100 h100 bc-000000000-12" v-show="showConfig">
+            <div class="d-ib c-666666 p-0005 b-1-67c23a br-5 o-h bc-fff">
+                <div class="line">是否debug:{{config.debug}}</div>
+                <div class="line">监听类型:{{config.h_type}}</div>
+                <div class="line">公共的配置:{{config.common}}</div>
+                <div class="line">最小单元的配置:{{config.single}}</div>
+                <div class="line">输出单位:{{config.out_unit}}</div>
+                <div class="line">缩放:{{config.zoom}}</div>
+                <div class="line">需要缩放的单位:{{config.need_zoom_unit}}</div>
+                <div class="line">需要处理class规则:{{config.reg}}</div>
+                <div class="line">页面临时class规则:{{config.page_common}}</div>
+                <div class="line">监控目录:{{config.watch_dir}}</div>
+                <div class="line">老样式的位置:{{config.old_css_reg}}</div>
+                <div class="line">需要缩放的key:{{config.key_need_zoom}}</div>
+                <div class="line">css的输出地方:{{config.out_path}}</div>
+            </div>
         </div>
     </div>
 </body>
@@ -49,7 +53,8 @@
               "static_map": {},
               "out_path": "@FileDir@FileName@FileType"
           },
-            web_log:[]
+            web_log:[],
+            showConfig:false
         },
         created(){
             this.getConfig()
@@ -57,7 +62,7 @@
         },
         computed:{
             web_log_html:function () {
-                return this.web_log.join("</br>")
+                return this.web_log.join("</br>").replace("\n","</br>")
             }
         },
         methods:{
