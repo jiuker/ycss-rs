@@ -1,256 +1,256 @@
-<css key="^bc-([A-Z|a-z|0-9]{3,6})$">
+<css key="^\.bc-([A-Z|a-z|0-9]{3,6})$">
     bc-$1
 </css>
-<css key="^bc-(\d{3,3})-(\d{3,3})-(\d{3,3})$">
+<css key="^\.bc-(\d{3,3})-(\d{3,3})-(\d{3,3})$">
     bc-$1$2$3
 </css>
-<css key="^bc-(\d{3,3})-(\d{3,3})-(\d{3,3})-(\d{0,2})$">
+<css key="^\.bc-(\d{3,3})-(\d{3,3})-(\d{3,3})-(\d{0,2})$">
     bc-$1$2$3-$4
 </css>
-<css key="^br-nr$">
+<css key="^\.br-nr$">
     br-nr
 </css>
-<css key="^bs-(\d{1,3})-(\d{1,3})$">
+<css key="^\.bs-(\d{1,3})-(\d{1,3})$">
     bs-$1-$2
 </css>
-<css key="^bp-c$">
+<css key="^\.bp-c$">
     bp-c
 </css>
-<css key="^bs-c$">
+<css key="^\.bs-c$">
     bs-cover
 </css>
 
-<css key="^b-(\d{1,3})-([A-Z|a-z|0-9]{3,6})$">
+<css key="^\.b-(\d{1,3})-([A-Z|a-z|0-9]{3,6})$">
    b-$1-$2
 </css>
-<css key="^bl-(\d{1,3})-([A-Z|a-z|0-9]{3,6})$">
+<css key="^\.bl-(\d{1,3})-([A-Z|a-z|0-9]{3,6})$">
    bl-$1-$2
 </css>
-<css key="^bb-(\d{1,3})-([A-Z|a-z|0-9]{3,6})$">
+<css key="^\.bb-(\d{1,3})-([A-Z|a-z|0-9]{3,6})$">
    bb-$1-$2
 </css>
-<css key="^br-(\d{1,3})-([A-Z|a-z|0-9]{3,6})$">
+<css key="^\.br-(\d{1,3})-([A-Z|a-z|0-9]{3,6})$">
    br-$1-$2
 </css>
-<css key="^bt-(\d{1,3})-([A-Z|a-z|0-9]{3,6})$">
+<css key="^\.bt-(\d{1,3})-([A-Z|a-z|0-9]{3,6})$">
    bt-$1-$2
 </css>
-<css key="^br-(\d{1,3})$">
+<css key="^\.br-(\d{1,3})$">
    br-$1
 </css>
-<css key="^bw-(\d{1,3})$">
+<css key="^\.bw-(\d{1,3})$">
    bw-$1
 </css>
 
-<css key="^o-(\d{1,3})-([A-Z|a-z|0-9]{3,6})$">
+<css key="^\.o-(\d{1,3})-([A-Z|a-z|0-9]{3,6})$">
    o-$1-$2
 </css>
-<css key="^o-n$">
+<css key="^\.o-n$">
   o-n
 </css>
 
-<css key="^c-([A-Z|a-z|0-9]{3,6})$">
+<css key="^\.c-([A-Z|a-z|0-9]{3,6})$">
    c-$1
 </css>
-<css key="^ls-([0-9]{1,3})$">
+<css key="^\.ls-([0-9]{1,3})$">
    ls-$1
 </css>
-<css key="^lh-([0-9]{1,3})$">
+<css key="^\.lh-([0-9]{1,3})$">
   lh-$1
 </css>
-<css key="^ta-s$">
+<css key="^\.ta-s$">
   ta-s
 </css>
-<css key="^ta-c$">
+<css key="^\.ta-c$">
    ta-c
 </css>
-<css key="^ta-e$">
+<css key="^\.ta-e$">
    ta-e
 </css>
-<css key="^ta-l$">
+<css key="^\.ta-l$">
    ta-l
 </css>
-<css key="^ta-r$">
+<css key="^\.ta-r$">
   ta-r
 </css>
-<css key="^fs-(\d{1,3})$">
+<css key="^\.fs-(\d{1,3})$">
   fs-$1
 </css>
-<css key="^fw-([A-Z|a-z|0-9]{1,6})$">
+<css key="^\.fw-([A-Z|a-z|0-9]{1,6})$">
    fw-$1
 </css>
 
-<css key="^m-(\d{2,2})(\d{2,2})$">
+<css key="^\.m-(\d{2,2})(\d{2,2})$">
    m-$1$2
 </css>
-<css key="^ml-([-|0-9]{1,4})$">
+<css key="^\.ml-([-|0-9]{1,4})$">
    ml-$1
 </css>
-<css key="^mr-([-|0-9]{1,4})$">
+<css key="^\.mr-([-|0-9]{1,4})$">
    mr-$1
 </css>
-<css key="^mt-([-|0-9]{1,4})$">
+<css key="^\.mt-([-|0-9]{1,4})$">
    mt-$1
 </css>
-<css key="^mb-([-|0-9]{1,4})$">
+<css key="^\.mb-([-|0-9]{1,4})$">
    mb-$1
 </css>
 
-<css key="^p-(\d{2,2})(\d{2,2})$">
+<css key="^\.p-(\d{2,2})(\d{2,2})$">
    p-$1$2
 </css>
-<css key="^pl-([-|0-9]{1,4})$">
+<css key="^\.pl-([-|0-9]{1,4})$">
    pl-$1
 </css>
-<css key="^pr-([-|0-9]{1,4})$">
+<css key="^\.pr-([-|0-9]{1,4})$">
    pr-$1
 </css>
-<css key="^pt-([-|0-9]{1,4})$">
+<css key="^\.pt-([-|0-9]{1,4})$">
    pt-$1
 </css>
-<css key="^pb-([-|0-9]{1,4})$">
+<css key="^\.pb-([-|0-9]{1,4})$">
    pb-$1
 </css>
 
-<css key="^h-(\d{1,3})$">
+<css key="^\.h-(\d{1,3})$">
   h-$1
 </css>
-<css key="^h(\d{1,3})$">
+<css key="^\.h(\d{1,3})$">
    h$1
 </css>
-<css key="^w-(\d{1,3})$">
+<css key="^\.w-(\d{1,3})$">
   w-$1
 </css>
-<css key="^w(\d{1,3})$">
+<css key="^\.w(\d{1,3})$">
   w$1
 </css>
-<css key="^h-(\d{1,3})-vh$">
+<css key="^\.h-(\d{1,3})-vh$">
    h-$1-vh
 </css>
-<css key="^w-(\d{1,3})-vw$">
+<css key="^\.w-(\d{1,3})-vw$">
     w-$1-vw
 </css>
 
-<css key="^maxh-(\d{1,3})$">
+<css key="^\.maxh-(\d{1,3})$">
   maxh-$1
 </css>
-<css key="^maxh(\d{1,3})$">
+<css key="^\.maxh(\d{1,3})$">
   maxh$1
 </css>
-<css key="^maxw-(\d{1,3})$">
+<css key="^\.maxw-(\d{1,3})$">
    maxw-$1
 </css>
-<css key="^maxw(\d{1,3})$">
+<css key="^\.maxw(\d{1,3})$">
    maxw$1
 </css>
-<css key="^minh-(\d{1,3})$">
+<css key="^\.minh-(\d{1,3})$">
    minh-$1
 </css>
-<css key="^minw-(\d{1,3})$">
+<css key="^\.minw-(\d{1,3})$">
    minw-$1
 </css>
 
-<css key="^p-a$">
+<css key="^\.p-a$">
    p-a
 </css>
-<css key="^p-f$">
+<css key="^\.p-f$">
   p-f
 </css>
-<css key="^p-r$">
+<css key="^\.p-r$">
   p-r
 </css>
 
-<css key="^d-b$">
+<css key="^\.d-b$">
   d-b
 </css>
-<css key="^d-ib$">
+<css key="^\.d-ib$">
   d-ib
 </css>
-<css key="^d-i$">
+<css key="^\.d-i$">
   d-i
 </css>
 
-<css key="^b-(-{0,1}\d{1,3})$">
+<css key="^\.b-(-{0,1}\d{1,3})$">
    b-$1
 </css>
-<css key="^l-(-{0,1}\d{1,3})$">
+<css key="^\.l-(-{0,1}\d{1,3})$">
   l-$1
 </css>
-<css key="^t-(-{0,1}\d{1,3})$">
+<css key="^\.t-(-{0,1}\d{1,3})$">
   t-$1
 </css>
-<css key="^r-(-{0,1}\d{1,3})$">
+<css key="^\.r-(-{0,1}\d{1,3})$">
   r-$1
 </css>
 
-<css key="^va-m$">
+<css key="^\.va-m$">
     va-m
 </css>
 
-<css key="^zi-(\d{1,6})$">
+<css key="^\.zi-(\d{1,6})$">
     zi-$1
 </css>
 
-<css key="^d-f$">
+<css key="^\.d-f$">
     d-f
 </css>
-<css key="^fd-r$">
+<css key="^\.fd-r$">
    fd-r
 </css>
-<css key="^fd-c$">
+<css key="^\.fd-c$">
    fd-c
 </css>
-<css key="^jc-c$">
+<css key="^\.jc-c$">
    jc-c
 </css>
-<css key="^ai-c$">
+<css key="^\.ai-c$">
   ai-c
 </css>
-<css key="^jc-fe$">
+<css key="^\.jc-fe$">
   jc-fe
 </css>
-<css key="^fw-nw$">
+<css key="^\.fw-nw$">
     fw-nw
 </css>
-<css key="^fw-w$">
+<css key="^\.fw-w$">
     fw-w
 </css>
-<css key="^f-(\d{1,3})$">
+<css key="^\.f-(\d{1,3})$">
     f-$1
 </css>
-<css key="^o-a$">
+<css key="^\.o-a$">
     o-a
 </css>
 
-<css key="^c-p$">
+<css key="^\.c-p$">
    c-p
 </css>
 
-<css key="^o-h-(\d{1,2})$">
+<css key="^\.o-h-(\d{1,2})$">
     o-h-$1
 </css>
-<css key="^td-n$">
+<css key="^\.td-n$">
    td-n
 </css>
-<css key="^f-c-(\d{1,2})-([A-Z|a-z|0-9]{3,6})$">
+<css key="^\.f-c-(\d{1,2})-([A-Z|a-z|0-9]{3,6})$">
     d-f
     jc-c
     ai-c
     b-$1-$2
     test-red
 </css>
-<css key="^o-h$">
+<css key="^\.o-h$">
     o-h
 </css>
-<css key="^bs-bb$">
+<css key="^\.bs-bb$">
   bs-bb
 </css>
-<css key="^ti-(\d{1,2})$">
+<css key="^\.ti-(\d{1,2})$">
    ti-$1
 </css>
-<css key="^f-r$">
+<css key="^\.f-r$">
    f-r
 </css>
-<css key="^f-l$">
+<css key="^\.f-l$">
    f-l
 </css>

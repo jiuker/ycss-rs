@@ -7,7 +7,7 @@
   "zoom": 1,
   "need_zoom_unit": "px|rem|upx",
   "reg": ["class=\"([^\"]+)\""],
-  "page_common": ["c-class=\"([^\"]+)\""],
+  "page_common": ["c-common=\"([^\"]+)\""],
   "watch_dir": ["./res","/home/jiuker/goworkspace/src/dmallRedisSync/center/res/vue-element-admin"],
   "old_css_reg": "/\\* Automatic generation Start \\*/([^/]+)/\\*",
   "key_need_zoom": [],

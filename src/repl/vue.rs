@@ -21,7 +21,7 @@ macro_rules! char_count {
             .len()
     };
 }
-// 数据，匹配规则，接收结果
+// 输入数据，匹配规则，接收结果
 macro_rules! str_match_reg {
     ($file_body:ident,$reg:expr,$result:ident) => {
         for reg_str in $reg {
@@ -42,6 +42,7 @@ macro_rules! str_match_reg {
         }
     };
 }
+// 查找匹配的
 macro_rules! find_captures {
     ($reg:ident,$str:ident) => {
         match $reg.captures($str.as_str()) {
@@ -50,6 +51,7 @@ macro_rules! find_captures {
         }
     };
 }
+// 替换$   p-$1-$2=>padding:[$1]px [$2]px
 macro_rules! replace_placeholder {
     ($target:ident,$rules:ident) => {
         for index in 0..$rules.len() {
@@ -57,6 +59,26 @@ macro_rules! replace_placeholder {
                 break;
             }
             $target = $target.replace(format!("${}", index).as_str(), &$rules[index])
+        }
+    };
+}
+// w-12 h-15 => .w-12{width:12px}.h-15{height:15px}
+macro_rules! class_to_css {
+    ($class:ident,$reg:ident,$out:ident) => {
+        for value_c_split_ in $class.split(" ") {
+            let value_c_split_trim = value_c_split_.trim().to_string();
+            for (mut sv, sr) in $reg.clone() {
+                if sr.is_match(value_c_split_trim.as_str()) {
+                    let sr_match = find_captures!(sr, value_c_split_trim);
+                    replace_placeholder!(sv, sr_match);
+                    // web_log!(LOGCH,"{:?}",sv_c);
+                    // set as css
+                    if !$out.is_empty() {
+                        sv = sv.add("\r\n");
+                    }
+                    $out = $out.add(sv.trim());
+                }
+            }
         }
     };
 }
@@ -137,21 +159,22 @@ impl Repl for VueRepl {
         for rsl_str_split in rsl_str.split(" ") {
             if rsl_str_split != "" {
                 if rsl_unique_map.insert(rsl_str_split) {
-                    rsl.push(String::from(rsl_str_split));
+                    rsl.push(format!(".{}", rsl_str_split));
                 }
             }
         }
         Ok(rsl)
     }
-
+    // 如果 common 里面不包含特殊正则匹配，也就是不包含 $ 的时候需要把这个样式无条件输出到页面上
     fn get_new_css(&self, cls: Vec<String>) -> Result<String> {
         let common_c = COMMON.lock()?;
         let mut page_reg = common_c.clone();
         let singal_c = SINGAL.lock()?;
-        // 重新组装common
+        // 重新组装页面级别的规则到所有匹配规则
         for (value, reg) in self.page_common.clone() {
             page_reg.insert(value.clone(), reg.clone());
         }
+        // 匹配替换全部的css
         let mut rsl = String::new();
         for cls_ in cls {
             if cls_.is_empty() {
@@ -166,37 +189,44 @@ impl Repl for VueRepl {
                     let mut css_content = String::from("");
                     for value_c_split in value.split("\n") {
                         if value_c_split != "" {
-                            for value_c_split_ in value_c_split.split(" ") {
-                                let value_c_split_trim = value_c_split_.trim().to_string();
-                                for (mut sv, sr) in singal_c.clone() {
-                                    if sr.is_match(value_c_split_trim.as_str()) {
-                                        let sr_match = find_captures!(sr, value_c_split_trim);
-                                        replace_placeholder!(sv, sr_match);
-                                        // web_log!(LOGCH,"{:?}",sv_c);
-                                        // set as css
-                                        if !css_content.is_empty() {
-                                            sv = sv.add("\r\n");
-                                        }
-                                        css_content = css_content.add(sv.trim());
-                                    }
-                                }
-                            }
+                            class_to_css!(value_c_split, singal_c, css_content);
                         }
                     }
-                    let rsl_string = format!(
-                        ".{}{}{}{}",
+                    rsl = format!(
+                        "{}{}{}{}{}",
+                        rsl,
                         cls_.as_str(),
                         "{",
                         css_content.as_str(),
                         "}\r\n"
                     );
                     // web_log!(LOGCH,"{:?}",rsl_string.as_str());
-                    rsl = rsl.add(rsl_string.as_str());
                     break;
                 }
             }
         }
-        rsl = format!("/* Automatic generation Start */\r\n{}\r\n/*", rsl);
+        // 追加 page_common string 里面不含有$规则
+        let mut _page_common_rsl = "".to_string();
+        for (value, reg) in self.page_common.clone() {
+            if !value.contains("$") {
+                let mut css_content = String::from("");
+                class_to_css!(value, singal_c, css_content);
+                _page_common_rsl = format!(
+                    "{}{}{}{}{}",
+                    _page_common_rsl,
+                    reg.to_string().replace("^", "").replace("$", ""),
+                    "{",
+                    css_content,
+                    "}\r\n"
+                );
+            }
+        }
+        web_log!(LOGCH, "rsl:{}", rsl);
+        web_log!(LOGCH, "_page_common_rsl:{}", _page_common_rsl);
+        rsl = format!(
+            "/* Automatic generation Start */\r\n{}{}\r\n/*",
+            rsl, _page_common_rsl
+        );
         // 缩放
         let yconf_c = YCONF.lock()?;
         let out_unit = &yconf_c.out_unit;
