@@ -221,8 +221,6 @@ impl Repl for VueRepl {
                 );
             }
         }
-        web_log!(LOGCH, "rsl:{}", rsl);
-        web_log!(LOGCH, "_page_common_rsl:{}", _page_common_rsl);
         rsl = format!(
             "/* Automatic generation Start */\r\n{}{}\r\n/*",
             rsl, _page_common_rsl
