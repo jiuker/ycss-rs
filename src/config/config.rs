@@ -72,7 +72,7 @@ macro_rules! set_reg_hash {
     };
 }
 pub fn read_reg_file(paths: Vec<String>) -> Result<HashMap<String, Regex>> {
-    web_log!(LOGCH, "start read regexp!");
+    web_log!("start read regexp!");
     let mut common_keys: Vec<String> = vec![];
     let mut common_values: Vec<String> = vec![];
     for p in paths {
@@ -106,7 +106,6 @@ pub fn read_reg_file(paths: Vec<String>) -> Result<HashMap<String, Regex>> {
                 Ok(Event::Eof) => break,
                 Err(e) => {
                     web_log!(
-                        LOGCH,
                         "reader err is {:?} and position is {}",
                         e,
                         reader.buffer_position()
@@ -117,14 +116,14 @@ pub fn read_reg_file(paths: Vec<String>) -> Result<HashMap<String, Regex>> {
             }
         }
     }
-    web_log!(LOGCH, "keys   is {:?}", common_keys);
-    web_log!(LOGCH, "values is {:?}", common_values);
+    web_log!("keys   is {:?}", common_keys);
+    web_log!("values is {:?}", common_values);
     if common_keys.len() != common_values.len() {
         return Err(Box::from("通用配置出现异常!"));
     }
     let mut common_reg_map: HashMap<String, Regex> = HashMap::new();
     set_reg_hash!(common_keys, common_values, common_reg_map);
-    web_log!(LOGCH, "reg_map is{:?}", common_reg_map);
-    web_log!(LOGCH, "read reg file done!");
+    web_log!("reg_map is{:?}", common_reg_map);
+    web_log!("read reg file done!");
     Ok(common_reg_map)
 }

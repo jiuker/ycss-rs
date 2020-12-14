@@ -33,7 +33,7 @@ macro_rules! add_dir_watch {
                 paths.push(path);
             }
         }
-        web_log!(LOGCH, "load file:{:?}", paths);
+        web_log!("load file:{:?}", paths);
         let mut file_watch = $file_watch.lock().expect("锁上失败!");
         for path in paths {
             file_watch.insert(
@@ -99,11 +99,11 @@ impl<'a> Runner<'a> {
         // 重置配置文件
         self.config_file_watch.lock().expect("锁失败!").clear();
         // 读取配置
-        web_log!(LOGCH, "set config path is {}", path);
+        web_log!("set config path is {}", path);
         let mut f = std::fs::File::open(path)?;
         let mut file_body = String::from("");
         f.read_to_string(&mut file_body)?;
-        web_log!(LOGCH, "load config:\r\n {}", file_body.to_string());
+        web_log!("load config:\r\n {}", file_body.to_string());
         let _yconf: YConfig = serde_json::from_str(file_body.as_str())?;
         let mut yconf_c: MutexGuard<YConfig> = YCONF.lock()?;
         (*yconf_c) = _yconf.clone();

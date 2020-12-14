@@ -4,9 +4,9 @@ use std::sync::{Arc, Mutex};
 // web_log!(LOGCH, "set config path is {}", path);
 #[macro_export]
 macro_rules! web_log {
-    ($target:tt,$($data:expr),*) => {
+    ($($data:expr),*) => {
         {
-            $target.lock().unwrap().send(format!($($data),*));
+            LOGCH.lock().unwrap().send(format!($($data),*));
         }
     };
 }

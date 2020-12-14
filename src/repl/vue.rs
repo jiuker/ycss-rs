@@ -275,7 +275,7 @@ impl Repl for VueRepl {
             // 路径不一致
             let out_path = &self.out_path;
             let mut file_body = "".to_string();
-            web_log!(LOGCH, "old file is {}", out_path);
+            web_log!("old file is {}", out_path);
             OpenOptions::new()
                 .read(true)
                 .write(true)
@@ -283,7 +283,7 @@ impl Repl for VueRepl {
                 .read_to_string(&mut file_body)?;
             let mut old_css_reg_c = yconf_c.old_css_reg.clone() as String;
             old_css_reg_c = old_css_reg_c.add(format!(" {}", self.path).as_ref());
-            web_log!(LOGCH, "old css reg is {}", old_css_reg_c);
+            web_log!("old css reg is {}", old_css_reg_c);
             let reg_reg = Regex::new(old_css_reg_c.as_str())?;
             rsl = match reg_reg.find(file_body.as_str()) {
                 None => "".to_string(),
@@ -312,7 +312,7 @@ impl Repl for VueRepl {
         let out_path = self.out_path.clone();
         if !out_path.eq(&self.path) {
             let mut file_body = "".to_string();
-            web_log!(LOGCH, "old file is {}", out_path);
+            web_log!("old file is {}", out_path);
             {
                 let mut file = OpenOptions::new()
                     .read(true)
