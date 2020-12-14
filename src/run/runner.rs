@@ -105,11 +105,11 @@ impl<'a> Runner<'a> {
         f.read_to_string(&mut file_body)?;
         web_log!("load config:\r\n {}", file_body.to_string());
         let _yconf: YConfig = serde_json::from_str(file_body.as_str())?;
-        let mut yconf_c: MutexGuard<YConfig> = YCONF.lock()?;
+        let mut yconf_c = YCONF.lock()?;
         (*yconf_c) = _yconf.clone();
-        let mut common_c: MutexGuard<HashMap<String, Regex>> = COMMON.lock()?;
+        let mut common_c = COMMON.lock()?;
         (*common_c) = read_reg_file((*yconf_c).common.clone())?;
-        let mut singal_c: MutexGuard<HashMap<String, Regex>> = SINGAL.lock()?;
+        let mut singal_c = SINGAL.lock()?;
         (*singal_c) = read_reg_file((*yconf_c).single.clone())?;
         // 添加文件监听
         self.add_dir_watch(
