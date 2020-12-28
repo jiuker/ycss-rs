@@ -49,7 +49,7 @@ macro_rules! check_file_change {
     ($file_watch:expr,$sender:expr,$file_type:expr) => {
         let mut file_watch = $file_watch.lock().unwrap();
         for (path, time) in file_watch.iter_mut() {
-            let now_time = std::fs::File::open(path.clone())?.metadata()?.modified()?;
+            let now_time = std::fs::File::open(path)?.metadata()?.modified()?;
             if !(*time).eq(&now_time) {
                 *time = now_time;
                 $sender.send($file_type(path.clone()))?;
