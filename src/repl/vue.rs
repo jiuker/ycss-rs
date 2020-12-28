@@ -103,9 +103,9 @@ impl Repl for VueRepl {
         let mut file_body = String::from("");
         file.read_to_string(&mut file_body)?;
         // 赋值文件的body
-        (*self).file_body = file_body.clone();
+        self.file_body = file_body.clone();
         // 识别输出路径
-        (*self).out_path = match parse_out_path(self.path.clone(), yconf_c.clone().out_path) {
+        self.out_path = match parse_out_path(self.path.clone(), yconf_c.clone().out_path) {
             Some(d) => d,
             None => "@FileDir@FileName@FileType".to_string(),
         };
@@ -150,7 +150,7 @@ impl Repl for VueRepl {
     }
     fn get_class(&self) -> Result<Vec<String>> {
         let yconf_c = YCONF.lock()?;
-        let file_body = (*self).get_file_body();
+        let file_body = self.get_file_body();
         let mut rsl_str = String::from("");
         let mut rsl: Vec<String> = vec![];
         str_match_reg!(file_body, &yconf_c.reg, rsl_str);
