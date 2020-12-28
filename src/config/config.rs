@@ -71,7 +71,7 @@ macro_rules! set_reg_hash {
         }
     };
 }
-pub fn read_reg_file(paths: Vec<String>) -> Result<HashMap<String, Regex>> {
+pub fn read_reg_file(paths: &Vec<String>) -> Result<HashMap<String, Regex>> {
     web_log!("start read regexp!");
     let mut common_keys: Vec<String> = vec![];
     let mut common_values: Vec<String> = vec![];

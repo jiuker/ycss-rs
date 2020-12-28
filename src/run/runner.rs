@@ -113,9 +113,9 @@ impl<'a> Runner<'a> {
         let mut yconf_c = YCONF.lock()?;
         (*yconf_c) = _yconf.clone();
         let mut common_c = COMMON.lock()?;
-        (*common_c) = read_reg_file((*yconf_c).common.clone())?;
+        (*common_c) = read_reg_file(&yconf_c.common)?;
         let mut singal_c = SINGAL.lock()?;
-        (*singal_c) = read_reg_file((*yconf_c).single.clone())?;
+        (*singal_c) = read_reg_file(&yconf_c.single)?;
         // 添加文件监听
         self.add_dir_watch(
             &yconf_c.watch_dir,
