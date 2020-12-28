@@ -36,10 +36,8 @@ macro_rules! add_dir_watch {
         web_log!("load file:{:?}", paths);
         let mut file_watch = $file_watch.lock().expect("锁上失败!");
         for path in paths {
-            file_watch.insert(
-                path.clone(),
-                std::fs::File::open(path.clone())?.metadata()?.modified()?,
-            );
+            let time_ = std::fs::File::open(&path)?.metadata()?.modified()?;
+            file_watch.insert(path, time_);
         }
         if (file_watch.len() as i32) >= WATCH_FILE_MAX {
             return Err(Box::try_from("over flow max watch file numbers!")?);
