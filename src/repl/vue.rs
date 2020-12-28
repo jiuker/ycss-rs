@@ -23,7 +23,7 @@ macro_rules! char_count {
 }
 // 输入数据，匹配规则，接收结果
 macro_rules! str_match_reg {
-    ($file_body:ident,$reg:expr,$result:ident) => {
+    ($file_body:expr,$reg:expr,$result:ident) => {
         for reg_str in $reg {
             let reg = Regex::new(reg_str)?;
             let rsl_ = reg
@@ -105,13 +105,13 @@ impl Repl for VueRepl {
         // 赋值文件的body
         self.file_body = file_body.clone();
         // 识别输出路径
-        self.out_path = match parse_out_path(self.path.clone(), yconf_c.clone().out_path) {
+        self.out_path = match parse_out_path(&self.path, &yconf_c.out_path) {
             Some(d) => d,
             None => "@FileDir@FileName@FileType".to_string(),
         };
         // 查询页面级别的公共样式
         let mut page_common_str = "".to_string();
-        str_match_reg!(file_body, &yconf_c.page_common, page_common_str);
+        str_match_reg!(&file_body, &yconf_c.page_common, page_common_str);
         // dbg!(page_common_str);
         let mut page_common_vec = vec![];
         for rsl_ in page_common_str.split("<") {
@@ -339,7 +339,7 @@ impl Repl for VueRepl {
 
 // 解析输出路径，以下是全路径
 // @FileDir@FileName@FileType
-pub fn parse_out_path(file_path: String, out_path: String) -> Option<String> {
+pub fn parse_out_path(file_path: &String, out_path: &String) -> Option<String> {
     let file_path_c = Path::new(&file_path);
     let mut rsl = out_path.clone();
     let file_dir = file_path.replace(file_path_c.file_name()?.to_str()?, "");
