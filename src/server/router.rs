@@ -20,7 +20,7 @@ pub mod my_router {
         let _ = file.read_to_end(&mut buf).expect("读取错误");
         let singal_c: MutexGuard<HashMap<String, Regex>> = SINGAL.lock().unwrap();
         let mut will_insert_regs = "".to_string();
-        for (value, reg) in singal_c.clone() {
+        for (value, reg) in singal_c.iter() {
             will_insert_regs =
                 will_insert_regs.add(format!("   this.regexps.push{}\r\n", "({").as_ref());
             will_insert_regs = will_insert_regs
