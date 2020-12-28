@@ -132,17 +132,15 @@ impl Repl for VueRepl {
             if index % 2 == 0 {
                 common_keys.push(
                     "^".to_string()
-                        + page_common_vec[index].clone().as_ref()
+                        + page_common_vec.get(index).unwrap()
                         + "$".to_string().as_ref(),
                 )
             } else {
-                common_values.push(page_common_vec[index].clone())
+                common_values.push(page_common_vec.get(index).unwrap())
             }
             index = index + 1;
         }
         set_reg_hash!(common_keys, common_values, self.page_common);
-        // dbg!(common_values);
-        // dbg!(self.page_common.clone());
         Ok(())
     }
     fn get_file_body(&self) -> String {
@@ -171,7 +169,7 @@ impl Repl for VueRepl {
         let mut page_reg = common_c.clone();
         let singal_c = SINGAL.lock()?;
         // 重新组装页面级别的规则到所有匹配规则
-        for (value, reg) in self.page_common.clone() {
+        for (value, reg) in self.page_common.iter() {
             page_reg.insert(value.clone(), reg.clone());
         }
         // 匹配替换全部的css
