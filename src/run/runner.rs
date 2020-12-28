@@ -75,7 +75,12 @@ impl<'a> Runner<'a> {
         run.load_config(path).unwrap();
         run
     }
-    pub fn add_dir_watch(&self, dir: Vec<String>, file_type: String, typ: FileType) -> Result<()> {
+    pub fn add_dir_watch(
+        &self,
+        dir: &Vec<String>,
+        file_type: &String,
+        typ: FileType,
+    ) -> Result<()> {
         match typ {
             FileType::Config(_d) => {
                 add_dir_watch!(self.config_file_watch, dir, file_type);
@@ -113,8 +118,8 @@ impl<'a> Runner<'a> {
         (*singal_c) = read_reg_file((*yconf_c).single.clone())?;
         // 添加文件监听
         self.add_dir_watch(
-            yconf_c.watch_dir.clone(),
-            yconf_c.h_type.clone(),
+            &yconf_c.watch_dir,
+            &yconf_c.h_type,
             FileType::Normal("".to_string()),
         )?;
         Ok(())
