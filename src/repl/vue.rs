@@ -205,7 +205,7 @@ impl Repl for VueRepl {
         }
         // 追加 page_common string 里面不含有$规则
         let mut _page_common_rsl = "".to_string();
-        for (value, reg) in self.page_common.clone() {
+        for (value, reg) in self.page_common.iter() {
             if !value.contains("$") {
                 let mut css_content = String::from("");
                 class_to_css!(value, singal_c, css_content);
@@ -279,7 +279,7 @@ impl Repl for VueRepl {
                 .write(true)
                 .open(out_path)?
                 .read_to_string(&mut file_body)?;
-            let mut old_css_reg_c = yconf_c.old_css_reg.clone() as String;
+            let mut old_css_reg_c = yconf_c.old_css_reg.clone();
             old_css_reg_c = old_css_reg_c.add(format!(" {}", self.path).as_ref());
             web_log!("old css reg is {}", old_css_reg_c);
             let reg_reg = Regex::new(old_css_reg_c.as_str())?;
@@ -307,18 +307,17 @@ impl Repl for VueRepl {
 
     fn write(&self, new_css: &String, old_css: &String) -> Result<()> {
         // 如果不是自己的文件需要追加地址
-        let out_path = self.out_path.clone();
-        if !out_path.eq(&self.path) {
+        if !self.out_path.eq(&self.path) {
             let mut file_body = "".to_string();
-            web_log!("old file is {}", out_path);
+            web_log!("old file is {}", self.out_path);
             {
                 let mut file = OpenOptions::new()
                     .read(true)
                     .write(true)
-                    .open(out_path.clone())?;
+                    .open(&self.out_path)?;
                 file.read_to_string(&mut file_body)?;
             }
-            let mut file = File::create(out_path)?;
+            let mut file = File::create(&self.out_path)?;
             let will_write = file_body.replace(old_css.as_str(), new_css.as_str());
             // web_log!(LOGCH,"will_write:{}",will_write);
             file.write(will_write.as_bytes())?;
