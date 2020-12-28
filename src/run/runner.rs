@@ -111,7 +111,7 @@ impl<'a> Runner<'a> {
         web_log!("load config:\r\n {}", file_body.to_string());
         let _yconf: YConfig = serde_json::from_str(file_body.as_str())?;
         let mut yconf_c = YCONF.lock()?;
-        (*yconf_c) = _yconf.clone();
+        (*yconf_c) = _yconf;
         let mut common_c = COMMON.lock()?;
         (*common_c) = read_reg_file(&yconf_c.common)?;
         let mut singal_c = SINGAL.lock()?;
