@@ -2,7 +2,7 @@ use std::ops::Add;
 extern crate regex;
 use crate::run::runner::Result;
 
-pub fn read_all_paths(dir: &String, file_type: String) -> Result<Vec<String>> {
+pub fn read_all_paths(dir: &String, file_type: &String) -> Result<Vec<String>> {
     let dirs = std::fs::read_dir(dir)?;
     let mut paths: Vec<String> = vec![];
     let file_type_more = String::from(".").add(file_type.clone().as_str()).add("$");
@@ -19,7 +19,7 @@ pub fn read_all_paths(dir: &String, file_type: String) -> Result<Vec<String>> {
                     }
                 }
                 .to_owned(),
-                file_type.clone(),
+                file_type,
             )? {
                 paths.push(path);
             }

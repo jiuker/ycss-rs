@@ -29,7 +29,7 @@ macro_rules! add_dir_watch {
     ($file_watch:expr,$dir:ident,$file_type:ident) => {
         let mut paths: Vec<String> = vec![];
         for _dir in $dir {
-            for path in read_all_paths(_dir, $file_type.clone())? {
+            for path in read_all_paths(_dir, $file_type)? {
                 paths.push(path);
             }
         }
