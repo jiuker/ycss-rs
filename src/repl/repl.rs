@@ -1,5 +1,5 @@
 use crate::run::runner::Result;
-pub trait Repl{
+pub trait Repl {
     /*
         GetFileBody() string
         GetOutFileBody() string
@@ -13,12 +13,12 @@ pub trait Repl{
         // close file
         Done()
     */
-    fn new(path:String)->Self;
-    fn init(&mut self)->Result<()>;
-    fn get_file_body(&self)->String;
-    fn get_class(&self) ->Result<Vec<String>>;
-    fn get_new_css(&self, cls:Vec<String>) ->Result<String>;
-    fn get_old_css(&self) ->Result<String>;
-    fn is_same(&self,a:String,b:String)->bool;
-    fn write(&self,new_css:String,old_css:String)->Result<()>;
+    fn new(path: String) -> Self;
+    fn init(&mut self) -> Result<()>;
+    fn get_file_body(&self) -> String;
+    fn get_class(&self) -> Result<Vec<String>>;
+    fn get_new_css(&self, cls: Vec<String>) -> Result<String>;
+    fn get_old_css(&self) -> Result<String>;
+    fn is_same(&self, a: &String, b: &String) -> bool;
+    fn write(&self, new_css: &String, old_css: &String) -> Result<()>;
 }

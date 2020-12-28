@@ -293,7 +293,7 @@ impl Repl for VueRepl {
         Ok(rsl)
     }
 
-    fn is_same(&self, a: String, b: String) -> bool {
+    fn is_same(&self, a: &String, b: &String) -> bool {
         let mut rsl = true;
         for s in "qazwsxedcrfvtgbnhyujmki,ol.;p'[]1234567890-".chars() {
             let a_ = char_count!(a, s);
@@ -307,7 +307,7 @@ impl Repl for VueRepl {
         rsl
     }
 
-    fn write(&self, new_css: String, old_css: String) -> Result<()> {
+    fn write(&self, new_css: &String, old_css: &String) -> Result<()> {
         // 如果不是自己的文件需要追加地址
         let out_path = self.out_path.clone();
         if !out_path.eq(&self.path) {

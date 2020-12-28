@@ -68,8 +68,8 @@ fn handle() {
                                         path
                                     )));
                                 }
-                                if !rep.is_same(new_css.clone(), old_css.clone()) {
-                                    rep.write(new_css.clone(), old_css.clone())?;
+                                if !rep.is_same(&new_css, &old_css) {
+                                    rep.write(&new_css, &old_css)?;
                                 } else {
                                     return Err(Box::from("is the same! do nothing！"));
                                 };
