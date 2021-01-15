@@ -12,7 +12,7 @@ use ycss_rs::run::runner::{FileType, Runner};
 use ycss_rs::server::router::my_router;
 use ycss_rs::web_log;
 
-#[actix_rt::main]
+#[actix_web::main]
 async fn main() -> std::io::Result<()> {
     spawn(move || handle());
     set_var("RUST_LOG", "actix_web=info");
@@ -25,8 +25,8 @@ async fn main() -> std::io::Result<()> {
             .service(web::resource("/test").to(my_router::test_html))
             .service(web::resource("/").to(my_router::main_html))
             .service(fs::Files::new("/res/", "res/"))
-            .route("/api/get_config", web::get().to(my_router::get_config))
-            .route("/ws/log", web::get().to(my_router::log))
+            .service(my_router::get_config)
+            .service(my_router::log)
     })
     .bind("127.0.0.1:5060")?
     .run()

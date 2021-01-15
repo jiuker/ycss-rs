@@ -3,6 +3,7 @@ pub mod my_router {
     use crate::log::log::LOGCH;
     use actix::clock::Duration;
     use actix::{Actor, AsyncContext, StreamHandler};
+    use actix_web::get;
     use actix_web::web::Payload;
     use actix_web::{Error, HttpRequest, HttpResponse};
     use actix_web_actors::ws;
@@ -45,6 +46,7 @@ pub mod my_router {
             .header("LOCATION", "./res/sample/js/main.html")
             .finish())
     }
+    #[get("/api/get_config")]
     pub async fn get_config(_req: HttpRequest) -> Result<HttpResponse, Error> {
         let mut f = std::fs::File::open("./res/config/config.json")?;
         let mut file_body = String::from("");
@@ -78,7 +80,7 @@ pub mod my_router {
             }
         }
     }
-
+    #[get("/ws/log")]
     pub async fn log(req: HttpRequest, stream: Payload) -> Result<HttpResponse, Error> {
         let resp = ws::start(WSLog {}, &req, stream);
         resp
