@@ -13,7 +13,6 @@ use std::thread::sleep;
 use std::time::{Duration, SystemTime};
 use std::{error, result};
 
-#[derive(Debug, Clone)]
 pub struct Runner<'a> {
     config_path: &'a str,
     config_file_watch: Arc<Mutex<HashMap<String, SystemTime>>>,

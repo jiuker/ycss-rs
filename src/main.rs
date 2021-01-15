@@ -4,6 +4,7 @@ extern crate ycss_rs;
 use actix_files as fs;
 use actix_web::middleware::Logger;
 use std::env::set_var;
+use std::sync::Arc;
 use std::thread::spawn;
 use ycss_rs::log::log::LOGCH;
 use ycss_rs::repl::repl::Repl;
@@ -40,7 +41,7 @@ fn handle() {
                     go...
     "#
     );
-    let run = Runner::new("./res/config/config.json");
+    let run = Arc::new(Runner::new("./res/config/config.json"));
     run.add_dir_watch(
         &vec!["./res/config".to_string()],
         &".json".to_string(),
