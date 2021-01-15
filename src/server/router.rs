@@ -18,7 +18,7 @@ pub mod my_router {
         let mut file = File::open("./res/regexp/js/sync.js").expect("没有读取到文件");
         let mut buf = vec![];
         let _ = file.read_to_end(&mut buf).expect("读取错误");
-        let singal_c: MutexGuard<HashMap<String, Regex>> = SINGAL.lock().unwrap();
+        let singal_c = SINGAL.lock().unwrap();
         let mut will_insert_regs = "".to_string();
         for (value, reg) in singal_c.iter() {
             will_insert_regs =
